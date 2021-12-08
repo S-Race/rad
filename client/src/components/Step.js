@@ -5,7 +5,7 @@ const Step = ({ iconName, caption }) => {
 
     return (
         <div className="flex flex-col items-center mt-8">
-            <div className="w-20 h-20 p-5 rounded-full bg-gray-700
+            <div className="p-6 rounded-full bg-gray-700
                 flex justify-center items-center hover:shadow-lg">
                 <Icon width="40" height="40" color="rgb(229, 231, 235)"/>
             </div>

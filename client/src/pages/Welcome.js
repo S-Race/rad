@@ -1,4 +1,5 @@
 import React from "react";
+import "../styles/welcome.css";
 
 import SnapContainer from "../components/SnapContainer";
 import SnapSection from "../components/SnapSection";

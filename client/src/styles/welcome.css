@@ -1,0 +1,22 @@
+.firstSection {
+    background-image: url("../assets/imgs/eybM9n4yrpE.jpg");
+}
+
+.blue_gloss {
+    background-color: rgba(0, 0, 150, 0.2);
+}
+
+h1 {
+    animation: slide_text 2s;
+}
+
+@keyframes slide_text {
+    from {
+        opacity: 0.2;
+        transform: translateX(-100vw);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
