@@ -9,7 +9,7 @@ const Step = ({ iconName, caption }) => {
                 flex justify-center items-center hover:shadow-lg">
                 <Icon width="40" height="40" color="rgb(229, 231, 235)"/>
             </div>
-            <figcaption className="text-gray-100 my-5">
+            <figcaption className="text-gray-900 my-5">
                 { caption }
             </figcaption>
         </div>
