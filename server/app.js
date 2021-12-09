@@ -2,10 +2,13 @@ const createError = require("http-errors");
 const express = require("express");
 const mongoose = require("mongoose");
 
-global.env = "development"; // process.env.NODE_ENV || "development";
+//environment variables configuration
+require("dotenv").config();
+
+global.env = process.env.NODE_ENV || "development";
 
 //Server routes
-const userRouter = require("./routes/user");
+const authRouter = require("./routes/auth");
 
 const app = express();
 
@@ -13,7 +16,7 @@ const app = express();
 app.use(express.json());
 app.use(express.static("client/build"));
 
-app.use("/api/rss", userRouter);
+app.use("/api/auth", authRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -75,10 +78,12 @@ const onListening = () => {
     let addr = server.address();
     let bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
     debug("Listening on " + bind);
+    const services = require("./services");
+    services.scanLibraries();
 };
 
 // Get port from environment (or 5000) and store in Express.
-const port = normalizePort("5000"); // normalizePort(process.env.PORT || "5000");
+const port = normalizePort(process.env.PORT || "5000");
 app.set("port", port);
 
 // Create HTTP server.
@@ -90,11 +95,14 @@ server.on("listening", onListening);
 // try to connect to mongo
 // if successful allow the server to start accepting requests
 // else log the error and terminate
-const DB_NAME = "rad";
-const DB_URL = "mongodb://192.168.1.172:27017/" + DB_NAME;
+const DB_URL = "mongodb://" + process.env.DB_HOST + "/" + process.env.DB_NAME;
+  
 mongoose.connect(DB_URL, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    authSource: "admin",
+    user: process.env.DB_USER,
+    pass: process.env.DB_PASSWORD,
 }).then(() => server.listen(port)).catch(e => {
     console.log(e);
 });

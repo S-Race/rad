@@ -14,9 +14,11 @@ const songSchema = new Schema({
         type: String,
         required: true
     },
-    poster: String
+    poster: String,
+    tags: [String],
+    categories: [String]
 });
 
 const Song = mongoose.model("Song", songSchema);
 
-module.export = Song;
+module.exports = Song;
