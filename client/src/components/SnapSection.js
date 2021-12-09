@@ -1,8 +1,8 @@
 import React from "react";
 
-const SnapSection = ({ children }) => {
+const SnapSection = ({ children, className }) => {
     return (
-        <section className="snap">
+        <section className={"snap " + className}>
             { children }
         </section>
     );
