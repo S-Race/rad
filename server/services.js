@@ -38,7 +38,8 @@ module.exports = {
         // loop over all the exising audio found from the ls
         // update the db with new audio
 
-        let dbAudio = (await Song.find({}, { name: 1, extension: 1 })).map(({ name, extension }) => name + "." + extension);
+        let dbAudio = (await Song.find({}, { name: 1, extension: 1 }))
+            .map(({ name, extension }) => name + "." + extension);
 
         audio.forEach(a => {
             if (!dbAudio.includes(path.basename(a))) {

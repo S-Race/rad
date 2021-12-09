@@ -1,6 +1,6 @@
 const User = require("../models/user");
 
-// Get user ... if user exist, login (return 200) else 
+// Get user ... if user exist, login (return 200) else
 // login fail
 module.exports.getUser = (req, res) => {
     User.findOne({ username: req.params.name }, (err, user) => {

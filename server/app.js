@@ -96,7 +96,6 @@ server.on("listening", onListening);
 // if successful allow the server to start accepting requests
 // else log the error and terminate
 const DB_URL = "mongodb://" + process.env.DB_HOST + "/" + process.env.DB_NAME;
-  
 mongoose.connect(DB_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
