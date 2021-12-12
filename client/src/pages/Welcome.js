@@ -27,7 +27,7 @@ const Welcome = () => {
                             Your personal Rad Server streams your music to play in any browser</div>
                     </article>
                     <figure className="w-3/5">
-                        <img src={pic1} alt="" className="w-3/5 float-right"/>
+                        <img src={pic1} alt="" className="md:h-96 h-64 float-right"/>
                     </figure>
                 </SnapSection>
                 <SnapSection className="bg-yellow-500 py-12">
