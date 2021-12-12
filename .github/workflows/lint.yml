@@ -10,6 +10,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Install modules
-      run: npm install eslint-plugin-react@latest && npm i -g eslint
+      run: cd client npm install --production && cd server && npm install -D && npm i -g eslint
     - name: Run ESLint
       run: eslint . --ext .js,.jsx
