@@ -1,6 +1,8 @@
 import React from "react";
 
 import { useUserContext } from "../UserContext";
+import Modal from "../components/Modal";
+import DirectoryChooser from "../components/DirectoryChooser";
 
 const Dashboard = () => {
     const { user } = useUserContext();
@@ -11,6 +13,9 @@ const Dashboard = () => {
             <div>
                 {user.username + " " + user.id}
             </div>
+            <Modal open={true}>
+                <DirectoryChooser/>
+            </Modal>
         </>
     );
 };

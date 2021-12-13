@@ -9,6 +9,7 @@ global.env = process.env.NODE_ENV || "development";
 
 //Server routes
 const authRouter = require("./routes/auth");
+const lsRouter = require("./routes/ls");
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use(express.static("client/build"));
 
 app.use("/api/auth", authRouter);
+app.use("/api/ls", lsRouter); // this route needs to be protected by auth at some point
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
