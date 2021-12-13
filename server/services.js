@@ -53,5 +53,18 @@ module.exports = {
             }
         });
     },
-    anyLibrariesExist: () => getLibraryRoots().length > 0
+    anyLibrariesExist: () => getLibraryRoots().length > 0,
+    lsDir: dir => {
+        let list = [];
+        if (!dir || !fs.existsSync(dir))
+            return list;
+
+        let files = fs.readdirSync(dir);
+        files.forEach(file => {
+            if (fs.lstatSync(dir + path.sep + file).isDirectory())
+                list.push(dir + path.sep + file);
+        });
+
+        return list;
+    }
 };
