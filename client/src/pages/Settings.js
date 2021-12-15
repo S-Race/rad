@@ -7,16 +7,13 @@ const Settings = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const closeModal = () => setModalOpen(false);
 
-    const addLibrary = (path, name="libraryName") => {
+    const addLibrary = path => {
         fetch("/api/addLibrary/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-                path,
-                name
-            })
+            body: JSON.stringify({ path })
         }).then(res => {
             res.json().then(json => {
                 // if response status code is not 201, adding error

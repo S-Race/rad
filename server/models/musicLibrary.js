@@ -2,12 +2,8 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const librarySchema = new Schema({
-    name: {
+    path: {
         type: String,
-        required: true
-    },
-    paths: {
-        type: [String],
         require: true
     }
 });
