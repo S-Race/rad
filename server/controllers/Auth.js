@@ -35,7 +35,7 @@ module.exports.createUser = (req, res) => {
         if (user?.length < 1) {
             const newUser = new User({ username });
             newUser.save().then(savedUser => {
-                if (savedUser === newUser) // if savedUser returned is the same as newUser the saved successfully
+                if (savedUser === newUser) // if savedUser returned is the same as newUser then saved successfully
                     res.status(201).send({
                         username: savedUser.username,
                         id: user._id,

@@ -25,8 +25,10 @@ const ls = (dir, exts, deep=true) => {
 
 const getLibraryRoots = async () => {
     // query the db for the library folders (added by the user)
-    const roots = (await MusicLibrary.find({}, { path: 1 }));
-    return roots.map(({ path }) => path );
+    const roots = (await MusicLibrary.find({}, { paths: 1 }));
+    let rootPaths = [];
+    roots.forEach(({ paths }) => rootPaths = rootPaths.concat(paths));
+    return rootPaths;
 };
 
 module.exports = {

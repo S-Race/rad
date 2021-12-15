@@ -26,7 +26,6 @@ const DirectoryChooser = ({ headerText="Choose A Directory", onClickAdd, onCance
             setPath(path); // the current path ... initally the path of root
             setDirs(dirs); // the directories in the current path
             setIsRoot(root); // if the current path is the root ... intially this is true
-            console.log(dirs);
         })();
     }, []);
 
@@ -93,7 +92,7 @@ const DirectoryChooser = ({ headerText="Choose A Directory", onClickAdd, onCance
                     Cancel
                 </button>
                 <button className="bg-blue-600 hover:bg-blue-800 px-4 py-2 mx-2 transform active:scale-95 rounded-sm"
-                    onClick={onClickAdd}
+                    onClick={() => onClickAdd(path)}
                 >
                     Add
                 </button>

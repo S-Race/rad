@@ -1,15 +1,18 @@
 const createError = require("http-errors");
 const express = require("express");
 const mongoose = require("mongoose");
+const os = require("os");
 
 //environment variables configuration
 require("dotenv").config();
 
 global.env = process.env.NODE_ENV || "development";
+global.HOME = os.homedir();
 
 //Server routes
 const authRouter = require("./routes/auth");
 const lsRouter = require("./routes/ls");
+const addLibraryRouter = require("./routes/addLibrary");
 
 const app = express();
 
@@ -19,6 +22,8 @@ app.use(express.static("client/build"));
 
 app.use("/api/auth", authRouter);
 app.use("/api/ls", lsRouter); // this route needs to be protected by auth at some point
+// actually pretty much every route except auth will have to be protected
+app.use("/api/addLibrary", addLibraryRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

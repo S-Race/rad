@@ -10,7 +10,7 @@ const NavBar = () => {
         user.username ?
             <nav className="flex px-8 bg-gray-900 justify-between">
                 <div className="flex items-center space-x-3">
-                    <a className="block p-3 text-white">Library</a>
+                    <Link to="/dashboard" className="block p-3 text-white">Library</Link>
                     <a className="block p-3 text-white">Playlists</a>
                     <a className="block p-3 text-white">Categories</a>
                 </div>
@@ -22,7 +22,7 @@ const NavBar = () => {
                 </div>
 
                 <div className="flex items-center space-x-3">
-                    <a className="block p-3">
+                    <Link to="/settings" className="block p-3">
                         <svg xmlns="http://www.w3.org/2000/svg"
                             className="h-6 w-6 text-white" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
@@ -38,8 +38,8 @@ const NavBar = () => {
                             <path strokeLinecap="round" strokeLinejoin="round"
                                 strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
-                    </a>
-                    <span className="block p-3 text-white">{user.username}</span>
+                    </Link>
+                    <span className="hidden md:block p-3 text-white">{user.username}</span>
                     <div className="container flex mx-auto">
                         <div className="flex border-2 rounded">
                             <button className="flex items-center justify-center px-4 border-r bg-gray-900">
