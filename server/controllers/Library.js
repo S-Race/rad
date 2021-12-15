@@ -25,3 +25,7 @@ module.exports.addLibrary = (req, res) => {
         else res.status(409).send({ msg: "That path is already tracked" });
     });
 };
+
+module.exports.getLibraries = async (_, res) => {
+    res.status(200).send(await services.getLibraryRoots());
+};

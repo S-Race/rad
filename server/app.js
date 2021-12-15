@@ -12,7 +12,7 @@ global.HOME = os.homedir();
 //Server routes
 const authRouter = require("./routes/auth");
 const lsRouter = require("./routes/ls");
-const addLibraryRouter = require("./routes/addLibrary");
+const libraryRouter = require("./routes/library");
 
 const app = express();
 
@@ -23,7 +23,7 @@ app.use(express.static("client/build"));
 app.use("/api/auth", authRouter);
 app.use("/api/ls", lsRouter); // this route needs to be protected by auth at some point
 // actually pretty much every route except auth will have to be protected
-app.use("/api/addLibrary", addLibraryRouter);
+app.use("/api/library", libraryRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
