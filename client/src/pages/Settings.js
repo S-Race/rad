@@ -21,7 +21,7 @@ const Settings = () => {
                 if (res.status !== 201)
                     alert(json.msg);
                 else {
-                    alert(json.msg); // will this a better ui later
+                    alert(json.msg); // will build this a better ui later
                     getLibraries();
                     closeModal();
                 }

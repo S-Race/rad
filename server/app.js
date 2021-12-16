@@ -9,10 +9,11 @@ require("dotenv").config();
 global.env = process.env.NODE_ENV || "development";
 global.HOME = os.homedir();
 
-//Server routes
+// Server routes
 const authRouter = require("./routes/auth");
 const lsRouter = require("./routes/ls");
 const libraryRouter = require("./routes/library");
+const deckRouter = require("./routes/deck");
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/ls", lsRouter); // this route needs to be protected by auth at some point
 // actually pretty much every route except auth will have to be protected
 app.use("/api/library", libraryRouter);
+app.use("/api/deck", deckRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
