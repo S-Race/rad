@@ -10,7 +10,8 @@ const NavBar = () => {
         user.username ?
             <nav className="flex px-8 bg-gray-900 justify-between">
                 <div className="flex items-center space-x-3">
-                    <Link to="/dashboard" className="block p-3 text-white">Library</Link>
+                    <Link to="/dashboard" className="block p-3 text-white">Home</Link>
+                    <a className="block p-3 text-white">Library</a>
                     <a className="block p-3 text-white">Playlists</a>
                     <a className="block p-3 text-white">Categories</a>
                 </div>

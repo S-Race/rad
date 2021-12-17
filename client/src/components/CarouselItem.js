@@ -3,7 +3,8 @@ import React from "react";
 const CarouselItem = ({ info }) => {
     return (
         <div className="w-60 h-60 relative rounded-sm flex flex-col carousel_item flex-shrink-0">
-            <img src={"https://picsum.photos/200/200?id="+info.name} className="w-60 h-48 rounded-sm rounded-b-none" alt=" "/>
+            <img src={"https://picsum.photos/200/200?id="+info.name}
+                className="w-60 h-48 rounded-sm rounded-b-none" alt=" "/>
             <div className="w-60 h-48 absolute top-0 left-0 z-10 border-2 hidden fade playFade
                 rounded-sm border-solid border-blue-500 justify-center items-center">
                 <div>
