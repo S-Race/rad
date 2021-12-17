@@ -6,7 +6,7 @@ const CONTINUE = 8;
 
 // get the items to display on the dashboard for the user
 module.exports.getDeckItems = (_, res) => {
-    Song.find({}, { "_id": 1, "name": 1 }, (err, songs) => {
+    Song.find({}, { "_id": 1, "name": 1, "poster": 1 }, (err, songs) => {
         if (err) {
             console.log(err);
             res.status(500).send({
