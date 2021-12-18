@@ -37,12 +37,14 @@ const constrain = (value, min, max) => {
 };
 
 
-const MusicPlayer = ({ name, path }) => {
-    const audieElement = useRef(); // html5 audio element
+const MusicPlayer = ({ name, track }) => {
+    const SPEEDS = ["1.0", "1.5", "2.0", "0.5"];
+    const audioElement = useRef(); // html5 audio element
     const progressBar = useRef(); // div that shows the progress
     const progressBarKnob = useRef(); // knob of the progress div
     const animationRef = useRef(); // reference to animation frame used to update ui
     const progressContainer = useRef(); // container of the entire slider
+    const speedRef = useRef(0); // current
 
     const [isPlaying, setIsPlaying] = useState(false);
     const [time, setTime] = useState({
@@ -52,14 +54,23 @@ const MusicPlayer = ({ name, path }) => {
 
     const SKIP = 30;
 
+    const changePlaySpeed = () => {
+        speedRef.current = (speedRef.current + 1) % SPEEDS.length;
+    };
+
+    const refreshAnimation = () => {
+        cancelAnimationFrame(animationRef.current);
+        animationRef.current = requestAnimationFrame(whilePlaying);
+    };
+
     const togglePlayPause = () => {
         const prevValue = isPlaying;
         setIsPlaying(!prevValue);
         if (!prevValue) {
-            audieElement.current.play();
+            audioElement.current.play();
             animationRef.current = requestAnimationFrame(whilePlaying);
         } else {
-            audieElement.current.pause();
+            audioElement.current.pause();
             cancelAnimationFrame(animationRef.current);
         }
     };
@@ -68,18 +79,20 @@ const MusicPlayer = ({ name, path }) => {
     const whilePlaying = () => {
         setTime({
             ...time,
-            current: audieElement.current.currentTime
+            current: audioElement.current.currentTime,
+            max: audioElement.current.duration
         });
+        audioElement.current.playbackRate = SPEEDS[speedRef.current];
+        setProgress(audioElement.current.currentTime, audioElement.current.duration);
         animationRef.current = requestAnimationFrame(whilePlaying);
-        setProgress(audieElement.current.currentTime, time.max);
     };
 
     // this is called when u click on either of the 2 seek buttons
     const clickSeek = (forward) => {
         const offset = forward ? SKIP : -SKIP;
-        const currentTime = audieElement.current.currentTime;
+        const currentTime = audioElement.current.currentTime;
         const changeTime = constrain(currentTime + offset, 0, time.max);
-        audieElement.current.currentTime = changeTime;
+        audioElement.current.currentTime = changeTime;
         setTime({ ...time, current: changeTime });
         setProgress(changeTime, time.max);
     };
@@ -92,32 +105,44 @@ const MusicPlayer = ({ name, path }) => {
         // calculate percentage played based on the size of the slider
         const percentage = (Math.floor(constrain(e.clientX - min, 0, width)) / width);
         const changeDuration = percentage * time.max;
-        audieElement.current.currentTime = changeDuration;
+        audioElement.current.currentTime = changeDuration;
         setTime({ ...time, current: changeDuration });
         setProgress(changeDuration, time.max);
     };
 
     // update ui elements to reflect the progress of the audio
     const setProgress = (current, max) => {
-        // console.log(current + " " + max);
         const percentage = max !== 0 && !isNaN(max) ? (current / max) * 100 : 0;
         progressBar.current.style.setProperty("width", percentage + "%");
         progressBarKnob.current.style.setProperty("left", percentage + "%");
     };
 
     useEffect(() => {
-        const seconds = Math.floor(audieElement.current.duration);
+        const seconds = Math.floor(audioElement.current.duration);
         setTime({
             ...time,
             max: seconds
         });
         setProgress(time.current, time.max);
-        audieElement.current.addEventListener("ended", () => setIsPlaying(false));
-    }, [audieElement?.current?.loadedmetadata, audieElement?.current?.readyState]);
+        audioElement.current.addEventListener("ended", () => setIsPlaying(false));
+        audioElement.current.addEventListener("error", () => {
+            setIsPlaying(false);
+            // auto get next audio to play
+            // ...
+        });
+
+    }, [audioElement?.current?.readyState]);
+
+    useEffect(() => {
+        togglePlayPause();
+        audioElement.current.play();
+        setIsPlaying(true);
+        refreshAnimation();
+    }, [track]);
 
     return (
         <div className="sticky bottom-0 z-20">
-            <audio ref={audieElement} src={path} preload="metadata"></audio>
+            <audio ref={audioElement} src={"/api/audio/" + track}></audio>
             {/* top panel */}
             <div className="bg-gray-900 border-blue-800 border-b rounded-t-xl p-4 flex items-end">
                 <img src={"https://picsum.photos/200/200?id=" + name} alt="" width="88" height="88"
@@ -125,7 +150,7 @@ const MusicPlayer = ({ name, path }) => {
                 <div className="w-full px-5">
                     <div className="min-w-0 flex-auto font-semibold my-2">
                         <p className="text-gray-200 text-lg">{name}</p>
-                        <h2 className="text-gray-600 text-sm truncate">{path}</h2>
+                        <h2 className="text-gray-600 text-sm truncate">{track}</h2>
                     </div>
                     <div className="relative" onDragOver={seek} ref={progressContainer}>
                         <div className="bg-gray-700 rounded-full overflow-hidden cursor-pointer" onClick={seek}>
@@ -224,9 +249,11 @@ const MusicPlayer = ({ name, path }) => {
                                 strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                     </button>
-                    <button type="button" className="rounded-lg text-xs leading-6 font-semibold px-2 ring-2
+                    <button
+                        type="button" onClick={changePlaySpeed}
+                        className="rounded-lg text-xs leading-6 font-semibold px-2 ring-2
                         ring-inset ring-gray-200 text-gray-200">
-                        1x
+                        {SPEEDS[speedRef.current]}x
                     </button>
                 </div>
             </div>

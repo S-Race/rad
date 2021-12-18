@@ -6,6 +6,11 @@ import MusicPlayer from "../components/MusicPlayer";
 const Dashboard = () => {
     const [deckLoaded, setDeckLoaded] = useState(false);
     const [deck, setDeck] = useState({});
+    const [showPlayer, setShowPlayer] = useState(false);
+    const [currentTrack, setCurrentTrack] = useState({
+        id: "",
+        name: ""
+    });
 
     useEffect(() => {
         (async () => {
@@ -22,14 +27,24 @@ const Dashboard = () => {
         })();
     }, []);
 
+    const onItemClick = (id, name) => {
+        setCurrentTrack({ id, name });
+        setShowPlayer(true);
+    };
+
     return (
         <div className="bg-gray-800 text-gray-100 min-h-screen">
             {
                 deckLoaded ? (
                     <>
-                        <Carousel title="Continue Listening" items={deck.recommend} />
-                        <Carousel title="Recommended" items={deck.resume} />
-                        <MusicPlayer path={deck.recommend[0].name} name={deck.recommend[0].name}/>
+                        <Carousel title="Continue Listening" items={deck.recommend} click={onItemClick}/>
+                        <Carousel title="Recommended" items={deck.resume} click={onItemClick}/>
+                        {
+                            showPlayer ?
+                                <MusicPlayer track={currentTrack.id} name={currentTrack.name} autoplay={true}/>
+                                :
+                                <></>
+                        }
                     </>
                 ) : <h2 className="text-4xl">Loading the deck</h2>
                 // this ^ will be a spinner later
