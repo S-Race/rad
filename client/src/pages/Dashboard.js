@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import Carousel from "../components/Carousel";
+import MusicPlayer from "../components/MusicPlayer";
 
 const Dashboard = () => {
     const [deckLoaded, setDeckLoaded] = useState(false);
@@ -28,6 +29,7 @@ const Dashboard = () => {
                     <>
                         <Carousel title="Continue Listening" items={deck.recommend} />
                         <Carousel title="Recommended" items={deck.resume} />
+                        <MusicPlayer path={deck.recommend[0].name} name={deck.recommend[0].name}/>
                     </>
                 ) : <h2 className="text-4xl">Loading the deck</h2>
                 // this ^ will be a spinner later
