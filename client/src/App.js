@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import NavBar from "./components/NavBar";
 import Dashboard from "./pages/Dashboard";
+import Settings from "./pages/Settings";
 
 import ProtectedRoutes from "./components/ProtectedRoutes";
 import UnProtectedRoutes from "./components/UnProtectedRoutes";
@@ -25,6 +26,7 @@ const App = () => {
                     </Route>
                     <Route element={<ProtectedRoutes/>}>
                         <Route path="/dashboard" element={<Dashboard/>}/>
+                        <Route path="/settings" element={<Settings/>}/>
                     </Route>
                     <Route path="*" element={<NotFound/>}/>
                 </Routes>

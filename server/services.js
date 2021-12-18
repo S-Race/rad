@@ -26,7 +26,7 @@ const ls = (dir, exts, deep=true) => {
 const getLibraryRoots = async () => {
     // query the db for the library folders (added by the user)
     const roots = (await MusicLibrary.find({}, { path: 1 }));
-    return roots.map(({ path }) => path );
+    return roots.map(({ path }) => path).filter(i => i); // filter to remove nulls
 };
 
 module.exports = {
@@ -53,5 +53,19 @@ module.exports = {
             }
         });
     },
-    anyLibrariesExist: () => getLibraryRoots().length > 0
+    getLibraryRoots: async () => await getLibraryRoots(),
+    anyLibrariesExist: () => getLibraryRoots().length > 0,
+    lsDir: dir => {
+        let list = [];
+        if (!dir || !fs.existsSync(dir))
+            return list;
+
+        let files = fs.readdirSync(dir);
+        files.forEach(file => {
+            if (fs.lstatSync(dir + path.sep + file).isDirectory())
+                list.push(dir + path.sep + file);
+        });
+
+        return list;
+    }
 };
