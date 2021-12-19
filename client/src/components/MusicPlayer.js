@@ -149,8 +149,8 @@ const MusicPlayer = ({ name, track }) => {
                     className="flex-none rounded-lg bg-gray-700" />
                 <div className="w-full px-5">
                     <div className="min-w-0 flex-auto font-semibold my-2">
-                        <p className="text-gray-200 text-lg">{name}</p>
-                        <h2 className="text-gray-600 text-sm truncate">{track}</h2>
+                        <p className="text-gray-200 md:text-lg sm:text-base text-sm">{name}</p>
+                        <h2 className="text-gray-600 hidden sm:block sm:text-xs md:text-sm truncate">{track}</h2>
                     </div>
                     <div className="relative" onDragOver={seek} ref={progressContainer}>
                         <div className="bg-gray-700 rounded-full overflow-hidden cursor-pointer" onClick={seek}>
@@ -183,7 +183,7 @@ const MusicPlayer = ({ name, track }) => {
                                 strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                     </button>
-                    <button type="button" className="hidden sm:block lg:hidden xl:block">
+                    <button type="button">
                         <svg width="24" height="24" fill="none">
                             <path d="m10 12 8-6v12l-8-6Z" fill="currentColor" stroke="currentColor" strokeWidth="2"
                                 strokeLinecap="round" strokeLinejoin="round" />
@@ -191,7 +191,7 @@ const MusicPlayer = ({ name, track }) => {
                                 strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                     </button>
-                    <button type="button" onClick={() => clickSeek(false)}>
+                    <button type="button" onClick={() => clickSeek(false)} className="hidden sm:block">
                         <svg
                             width="35" height="24" fill="none">
                             <path
@@ -231,7 +231,7 @@ const MusicPlayer = ({ name, track }) => {
 
                 {/* right side buttons */}
                 <div className="flex-auto flex items-center justify-evenly">
-                    <button type="button" onClick={() => clickSeek(true)}>
+                    <button type="button" onClick={() => clickSeek(true)} className="hidden sm:block">
                         <svg width="35" height="24" fill="none">
                             <path d="M17.509 16.95c-2.862 2.733-7.501 2.733-10.363 0-2.861-2.734-2.861-7.166
                                 0-9.9 2.862-2.733 7.501-2.733 10.363 0 .38.365.711.759.991 1.176"
@@ -241,7 +241,7 @@ const MusicPlayer = ({ name, track }) => {
                             <text x="22" y="16" fill="currentColor" fontWeight="bold" fontSize="10px">{SKIP}</text>
                         </svg>
                     </button>
-                    <button type="button" className="hidden sm:block lg:hidden xl:block">
+                    <button type="button">
                         <svg width="24" height="24" fill="none">
                             <path d="M14 12 6 6v12l8-6Z" fill="currentColor" stroke="currentColor" strokeWidth="2"
                                 strokeLinecap="round" strokeLinejoin="round" />
