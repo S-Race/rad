@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import Carousel from "../components/Carousel";
 import MusicPlayer from "../components/MusicPlayer";
+import Loader from "../components/Loader";
 
 const Dashboard = () => {
     const [deckLoaded, setDeckLoaded] = useState(false);
@@ -46,8 +47,7 @@ const Dashboard = () => {
                                 <></>
                         }
                     </>
-                ) : <h2 className="text-4xl">Loading the deck</h2>
-                // this ^ will be a spinner later
+                ) : <Loader text="Loading the deck"/>
             }
         </div>
     );

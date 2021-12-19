@@ -14,7 +14,6 @@ module.exports.getAudio = (req, res) => {
             return res.status(404).send({ msg: "Audio not found" });
 
         const filename = audio.location + path.sep + audio.name + "." + audio.extension;
-        console.log(filename);
         if (!fs.existsSync(filename))
             return res.status(404).send({ msg: "Audio missing from disk" });
 
@@ -38,8 +37,6 @@ const stream = (res, filename, range) => {
     const end = Math.min(start + CHUNK_SIZE, fileSize - 1);
 
     // Create headers
-    console.log(MIME);
-    console.log(path.extname(filename));
     const contentLength = end - start + 1;
     const headers = {
         "Content-Range": `bytes ${start}-${end}/${fileSize}`,
