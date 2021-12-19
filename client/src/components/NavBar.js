@@ -8,12 +8,11 @@ const NavBar = () => {
 
     return (
         user.username ?
-            <nav className="flex px-8 bg-gray-900 justify-between">
+            <nav className="flex flex-col md:flex-row px-8 bg-gray-900 justify-between">
                 <div className="flex items-center space-x-3">
                     <Link to="/dashboard" className="block p-3 text-white">Home</Link>
                     <a className="block p-3 text-white">Library</a>
                     <a className="block p-3 text-white">Playlists</a>
-                    <a className="block p-3 text-white">Categories</a>
                 </div>
 
                 <div className="flex items-center space-x-3">
@@ -40,8 +39,8 @@ const NavBar = () => {
                                 strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
                     </Link>
-                    <span className="hidden md:block p-3 text-white">{user.username}</span>
-                    <div className="container flex mx-auto">
+                    <span className="block p-3 text-white">{user.username}</span>
+                    <div className="container py-4 flex mx-auto">
                         <div className="flex border-2 rounded">
                             <button className="flex items-center justify-center px-4 border-r bg-gray-900">
                                 <svg className="w-6 h-6 text-white" fill="currentColor"
