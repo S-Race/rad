@@ -2,7 +2,7 @@ require("dotenv").config();
 const services = require("../services");
 
 // Get subdirs of root dir
-module.exports.getRootDirs = (req, res) => {
+module.exports.getRootDirs = (_, res) => {
     res.status(200).send({
         path: global.HOME,
         dirs: services.lsDir(global.HOME),

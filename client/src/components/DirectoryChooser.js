@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-const p = require("path");
 
 const DirectoryChooser = ({ headerText="Choose A Directory", onClickAdd, onCancel }) => {
     const [path, setPath] = useState("");
@@ -52,7 +51,10 @@ const DirectoryChooser = ({ headerText="Choose A Directory", onClickAdd, onCance
     };
 
     // request the parent dir
-    const goUp = () => ls(p.dirname(path));
+    const goUp = () => {
+        const p = path.endsWith("/") ? path.slice(0, path.lastIndexOf("/")) : path;
+        ls(p.slice(0, p.lastIndexOf("/")));
+    };
 
     return (
         <div className="bg-gray-800 shadow-xl md:w-3/5 w-11/12 mx-auto md:my-12 my-4 rounded-md content">
@@ -81,7 +83,7 @@ const DirectoryChooser = ({ headerText="Choose A Directory", onClickAdd, onCance
                         className={"p-2 text-gray-200 hover:bg-blue-700 cursor-pointer bg-gray-"
                             + (key % 2 === 0 ? "500" : "600")}
                         onClick={() => ls(dir)}>
-                        {p.basename(dir)}
+                        {dir.split("/").slice(-1)}
                     </li>
                 )}
             </ul>

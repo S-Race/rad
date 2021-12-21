@@ -98,6 +98,6 @@ module.exports = {
                 list.push(dir + path.sep + file);
         });
 
-        return list;
+        return list.map(l => l.replace("/\\/g", "/"));
     }
 };
