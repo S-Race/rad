@@ -3,20 +3,49 @@ const path = require("path");
 const Song = require("./models/song");
 const MusicLibrary = require("./models/musicLibrary");
 
+const canRead = path => {
+    // Check read permissions
+    try {
+        fs.accessSync(path, fs.constants.R_OK);
+        return true;
+    } catch (err) {
+        console.log("error occurred when getting permissions for %s: %s", path, err);
+        return false;
+    }
+};
+
+const canReadExecute = path => {
+    // Check read and execute permissions
+    try {
+        fs.accessSync(path, fs.constants.R_OK);
+        fs.accessSync(path, fs.constants.X_OK);
+        return true; // made it here ... dir exist and we can read/execute (cd) the dir
+    } catch (err) {
+        console.log("error occurred when getting permissions for %s: %s", path, err);
+        return false;
+    }
+};
+
 const ls = (dir, exts, deep=true) => {
     let list = [];
     if (!dir || !fs.existsSync(dir))
         return list;
 
+    if (!canReadExecute(dir))
+        return list;
+
     let files = fs.readdirSync(dir);
     files.forEach(file => {
-        if (fs.lstatSync(dir + path.sep + file).isDirectory() && deep)
-            list = list.concat(ls(dir + path.sep + file, exts, deep));
-        if (fs.lstatSync(dir + path.sep + file).isFile()) {
-            if (exts.includes(path.extname(file).slice(1)))
-                list.push(dir + path.sep + file);
-            if (exts.length < 1) // no extensions passed ?, assume all files
-                list.push(dir + path.sep + file);
+        const filepath = dir + path.sep + file;
+        if (fs.lstatSync(filepath).isDirectory() && deep)
+            list = list.concat(ls(filepath, exts, deep));
+        if (fs.lstatSync(filepath).isFile()) {
+            if (canRead(filepath)) { // no point adding it if i cant read from it
+                if (exts.includes(path.extname(file).slice(1)))
+                    list.push(filepath);
+                if (exts.length < 1) // no extensions passed ?, assume all files
+                    list.push(filepath);
+            }
         }
     });
 
@@ -60,12 +89,15 @@ module.exports = {
         if (!dir || !fs.existsSync(dir))
             return list;
 
+        if (!canReadExecute(dir))
+            return list;
+
         let files = fs.readdirSync(dir);
         files.forEach(file => {
             if (fs.lstatSync(dir + path.sep + file).isDirectory())
                 list.push(dir + path.sep + file);
         });
 
-        return list;
+        return list.map(l => l.replace("/\\/g", "/"));
     }
 };
