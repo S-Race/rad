@@ -1,4 +1,3 @@
-require("dotenv").config();
 const services = require("../services");
 
 // Get subdirs of root dir

@@ -20,7 +20,7 @@ const ProtectedRoutes = () => {
     };
 
     return user?.username ?
-        <>
+        <div className="bg-gray-900">
             <Outlet context={onItemClick}/>
             {
                 showPlayer ?
@@ -28,7 +28,7 @@ const ProtectedRoutes = () => {
                     :
                     <></>
             }
-        </>
+        </div>
         : <Login/>;
 };
 

@@ -1,4 +1,3 @@
-require("dotenv").config();
 const Song = require("../models/song");
 
 const RECOMMENDED = 8;

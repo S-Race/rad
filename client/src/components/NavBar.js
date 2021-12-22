@@ -11,7 +11,7 @@ const NavBar = () => {
             <nav className="flex flex-col md:flex-row px-8 bg-gray-900 justify-between">
                 <div className="flex items-center space-x-3">
                     <Link to="/dashboard" className="block p-3 text-white">Home</Link>
-                    <a className="block p-3 text-white">Library</a>
+                    <Link to="/library" className="block p-3 text-white">Library</Link>
                     <a className="block p-3 text-white">Playlists</a>
                 </div>
 
