@@ -1,17 +1,13 @@
 import React, { useEffect, useState } from "react";
+import { useOutletContext } from "react-router-dom";
 
 import Carousel from "../components/Carousel";
-import MusicPlayer from "../components/MusicPlayer";
 import Loader from "../components/Loader";
 
 const Dashboard = () => {
     const [deckLoaded, setDeckLoaded] = useState(false);
     const [deck, setDeck] = useState({});
-    const [showPlayer, setShowPlayer] = useState(false);
-    const [currentTrack, setCurrentTrack] = useState({
-        id: "",
-        name: ""
-    });
+    const onItemClick = useOutletContext();
 
     useEffect(() => {
         (async () => {
@@ -28,11 +24,6 @@ const Dashboard = () => {
         })();
     }, []);
 
-    const onItemClick = (id, name) => {
-        setCurrentTrack({ id, name });
-        setShowPlayer(true);
-    };
-
     return (
         <div className="bg-gray-800 text-gray-100 min-h-screen">
             {
@@ -40,12 +31,6 @@ const Dashboard = () => {
                     <>
                         <Carousel title="Continue Listening" items={deck.recommend} click={onItemClick}/>
                         <Carousel title="Recommended" items={deck.resume} click={onItemClick}/>
-                        {
-                            showPlayer ?
-                                <MusicPlayer track={currentTrack.id} name={currentTrack.name} autoplay={true}/>
-                                :
-                                <></>
-                        }
                     </>
                 ) : <Loader text="Loading the deck"/>
             }

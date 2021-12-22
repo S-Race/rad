@@ -15,6 +15,7 @@ const lsRouter = require("./routes/ls");
 const libraryRouter = require("./routes/library");
 const deckRouter = require("./routes/deck");
 const audioRouter = require("./routes/audio");
+const libraryItemsRouter = require("./routes/libraries");
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.use("/api/ls", lsRouter); // this route needs to be protected by auth at som
 app.use("/api/library", libraryRouter);
 app.use("/api/deck", deckRouter);
 app.use("/api/audio", audioRouter);
+app.use("/api/libraryItems", libraryItemsRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
