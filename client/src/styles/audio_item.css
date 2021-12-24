@@ -2,7 +2,7 @@
     background: rgba(0,0,0,0.4);
 }
 
-.carousel_item:hover .playFade {
+.audio_item:hover .playFade {
     display: flex;
 }
 
@@ -15,6 +15,6 @@
     cursor: pointer;
 }
 
-.carousel_item {
+.audio_item {
     background-color: rgb(0,0,0,0.2);
 }

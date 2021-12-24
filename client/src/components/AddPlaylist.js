@@ -82,7 +82,7 @@ const AddPlaylist = ({ headerText="Add to Playlist", finish, item_id }) => {
                 >&times;</span>
             </header>
 
-            <ul className="h-60">
+            <ul className="h-60 overflow-auto">
                 { playlists.map((item, i) =>
                     <li key={i} className="flex p-4 hover:bg-gray-500 hover:cursor-pointer"
                         onClick={() => addItemToPlaylist(item._id)}>

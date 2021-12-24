@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import "../styles/carousel.css";
+import "../styles/audio_item.css";
 
 import { calcDuration } from "../commons";
 import Modal from "./Modal";
@@ -18,7 +18,7 @@ const LibraryItem = ({ metadata: { _id, name, duration, categories, tags }, clic
                 </Modal> : <></>
             }
             <div className="flex space-x-3 my-4 flex-shrink-0">
-                <div className="relative w-30 h-24 carousel_item">
+                <div className="relative w-30 h-24 audio_item">
                     <img src={"https://picsum.photos/100/100?id=" + name} alt=""
                         className="flex-none rounded-lg w-30 h-24 flex-shrink-0" />
                     <div className="w-full h-24 absolute top-0 left-0 z-[1] border-2 rounded-lg hidden fade playFade

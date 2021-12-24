@@ -12,13 +12,13 @@ const NavBar = () => {
                 <div className="flex items-center space-x-3">
                     <Link to="/dashboard" className="block p-3 text-white">Home</Link>
                     <Link to="/library" className="block p-3 text-white">Library</Link>
-                    <a className="block p-3 text-white">Playlists</a>
+                    <Link to="/playlists" className="block p-3 text-white">Playlists</Link>
                 </div>
 
                 <div className="flex items-center space-x-3">
-                    <a className="block p-3 text-white">
+                    <Link to="/dashboard" className="block p-3 text-white">
                         <img src="images/sr.jpg" className="object-contain h-12 w-24"/>
-                    </a>
+                    </Link>
                 </div>
 
                 <div className="flex items-center space-x-3">

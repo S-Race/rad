@@ -14,7 +14,7 @@ const CarouselItem = ({ info, click }) => {
                     <AddPlaylist finish={closeModal} item_id={info._id} />
                 </Modal> : <></>
             }
-            <div className="w-60 h-60 relative rounded-sm flex flex-col carousel_item flex-shrink-0">
+            <div className="w-60 h-60 relative rounded-sm flex flex-col audio_item flex-shrink-0">
                 <img
                     src={"https://picsum.photos/200/200?id=" + info.name}
                     className="w-60 h-48 rounded-sm rounded-b-none"
