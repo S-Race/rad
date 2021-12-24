@@ -9,14 +9,13 @@ import { useUserContext } from "../UserContext";
 const ProtectedRoutes = () => {
     const { user } = useUserContext();
     const [showPlayer, setShowPlayer] = useState(false);
-    const [currentTrack, setCurrentTrack] = useState({
-        id: "",
-        name: ""
-    });
+    const [currentList, setCurrentList] = useState([]);
+    const [startItem, setStartItem] = useState(0);
 
-    const onItemClick = (id, name) => {
-        setCurrentTrack({ id, name });
+    const onItemClick = (items, first) => {
+        setCurrentList(items);
         setShowPlayer(true);
+        setStartItem(first || 0);
     };
 
     return user?.username ?
@@ -24,7 +23,7 @@ const ProtectedRoutes = () => {
             <Outlet context={onItemClick}/>
             {
                 showPlayer ?
-                    <MusicPlayer track={currentTrack.id} name={currentTrack.name} autoplay={true}/>
+                    <MusicPlayer list={currentList} autoplay={true} initialTrack={startItem}/>
                     :
                     <></>
             }

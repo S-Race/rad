@@ -1,9 +1,50 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import { calcDuration } from "../commons";
 import { useMusicPlayer } from "../hooks/MusicPlayer";
 
-const MusicPlayer = ({ name, track }) => {
+
+// list struct {
+//     name: string,
+//     items: [
+//         track: string
+//         name: string
+//     ]
+// }
+
+const MusicPlayer = ({ list, initialTrack=0 }) => {
+    const [currentTrack, setCurrentTrack] = useState(initialTrack);
+
+    const getItemName = async (index) => {
+        const res = await fetch("/api/song/" + list.items[index].track, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (res.status !== 200) {
+            alert("A critical error occurred");
+            return;
+        }
+
+        const { name } = (await res.json());
+        list.items[index].name = name;
+    };
+
+    useEffect(() => {
+        if (!list.items[currentTrack].name)
+            getItemName(currentTrack);
+    }, []);
+
+    const navigateList = async (direction) => {
+        const next = currentTrack + direction;
+        if (next < list.items.length && next > -1) {
+            if (!list.items[next].name)
+                getItemName(next); // if name no exist, fetch it
+            setCurrentTrack(currentTrack + direction);
+        }
+    };
 
     const {
         isPlaying,
@@ -19,21 +60,23 @@ const MusicPlayer = ({ name, track }) => {
         changeTrack,
         SKIP,
         currentSpeed
-    } = useMusicPlayer();
+    } = useMusicPlayer(navigateList);
 
-    useEffect(() => changeTrack(), [track]);
+    useEffect(() => changeTrack(), [list, list.items[currentTrack.track]]);
 
     return (
         <div className="sticky bottom-0 z-20">
-            <audio ref={audioElement} src={"/api/audio/" + track}></audio>
+            <audio ref={audioElement} src={"/api/audio/" + list.items[currentTrack].track}></audio>
             {/* top panel */}
             <div className="bg-gray-900 border-blue-800 border-b rounded-t-xl p-4 flex items-end">
-                <img src={"https://picsum.photos/200/200?id=" + name} alt="" width="88" height="88"
+                <img src={"https://picsum.photos/200/200?id=" + list.items[currentTrack].name}
+                    alt="" width="88" height="88"
                     className="flex-none rounded-lg bg-gray-700" />
                 <div className="w-full px-5">
                     <div className="min-w-0 flex-auto font-semibold my-2">
-                        <p className="text-gray-200 md:text-lg sm:text-base text-sm">{name}</p>
-                        <h2 className="text-gray-600 hidden sm:block sm:text-xs md:text-sm truncate">{track}</h2>
+                        <p className="text-gray-200 md:text-lg sm:text-base text-sm">
+                            {list.items[currentTrack].name}</p>
+                        <h2 className="text-gray-600 hidden sm:block sm:text-xs md:text-sm truncate">{list.name}</h2>
                     </div>
                     <div className="relative" onDragOver={seek} ref={progressContainer}>
                         <div className="bg-gray-700 rounded-full overflow-hidden cursor-pointer" onClick={seek}>
@@ -66,7 +109,7 @@ const MusicPlayer = ({ name, track }) => {
                                 strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                     </button>
-                    <button type="button">
+                    <button type="button" onClick={() => navigateList(-1)}>
                         <svg width="24" height="24" fill="none">
                             <path d="m10 12 8-6v12l-8-6Z" fill="currentColor" stroke="currentColor" strokeWidth="2"
                                 strokeLinecap="round" strokeLinejoin="round" />
@@ -124,7 +167,7 @@ const MusicPlayer = ({ name, track }) => {
                             <text x="22" y="16" fill="currentColor" fontWeight="bold" fontSize="10px">{SKIP}</text>
                         </svg>
                     </button>
-                    <button type="button">
+                    <button type="button" onClick={() => navigateList(1)}>
                         <svg width="24" height="24" fill="none">
                             <path d="M14 12 6 6v12l8-6Z" fill="currentColor" stroke="currentColor" strokeWidth="2"
                                 strokeLinecap="round" strokeLinejoin="round" />

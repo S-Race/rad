@@ -7,6 +7,16 @@ const CarouselItem = ({ info, click }) => {
     const [modalOpen, setModalOpen] = useState(false);
     const closeModal = () => setModalOpen(false);
 
+    const play = () => {
+        click({
+            name: info.name,
+            items: [{
+                track: info._id,
+                name: info.name
+            }]
+        });
+    };
+
     return (
         <>
             { modalOpen ?
@@ -24,7 +34,7 @@ const CarouselItem = ({ info, click }) => {
                     className="w-60 h-48 absolute top-0 left-0 z-[1] border-2 hidden fade playFade
                     rounded-sm border-solid border-blue-500"
                 >
-                    <button onClick={() => click(info._id, info.name)} className="bottom-[65px] right-[85px] absolute">
+                    <button onClick={play} className="bottom-[65px] right-[85px] absolute">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             className="h-16 w-16 block hover:text-blue-500 cursor-pointer"

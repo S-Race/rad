@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-// import { useOutletContext } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 
 import "../styles/audio_item.css";
 
@@ -11,9 +11,13 @@ const Playlists = () => {
     const [playlistLoaded, setPlaylistLoaded] = useState(false);
     const [playlist, setPlaylist] = useState([]);
     const { playlist_id } = useParams();
+    const onItemClick = useOutletContext();
 
-    const onItemClickPlay = () => {
-        // jump to specific item in playlist to play
+    const onItemClickPlay = index => {
+        onItemClick({
+            name: playlist.name,
+            items: playlist.items.map(i => { return { track: i }; })
+        }, index);
     };
 
     useEffect(() => {
@@ -43,10 +47,11 @@ const Playlists = () => {
                     <div>
                         <div className="flex md:my-12 my-4">
                             <div className="audio_item !bg-transparent relative w-28 md:w-48 flex-shrink-0">
-                                <img src={playlist.poster || "https://picsum.photos/200/200?id=" + playlist.name} alt=" "
-                                    className="h-28 w-28 md:h-48 md:w-48 rounded-lg"/>
-                                <div className="h-28 w-28 md:h-48 md:w-48 absolute top-0 left-0 z-[1] border-2 rounded-lg hidden fade playFade
-                                    border-solid border-blue-500 justify-center items-center">
+                                <img src={playlist.poster || "https://picsum.photos/200/200?id=" + playlist.name}
+                                    alt=" " className="h-28 w-28 md:h-48 md:w-48 rounded-lg"/>
+                                <div className="h-28 w-28 md:h-48 md:w-48 absolute top-0 left-0 z-[1]
+                                    border-2 rounded-lg hidden fade playFade border-solid border-blue-500
+                                    justify-center items-center">
                                     <button>
                                         <svg xmlns="http://www.w3.org/2000/svg"
                                             className="h-12 w-12 block hover:text-blue-500 cursor-pointer"

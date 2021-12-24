@@ -10,6 +10,16 @@ const LibraryItem = ({ metadata: { _id, name, duration, categories, tags }, clic
     const [modalOpen, setModalOpen] = useState(false);
     const closeModal = () => setModalOpen(false);
 
+    const play = () => {
+        click({
+            name: name,
+            items: [{
+                track: _id,
+                name: name
+            }]
+        });
+    };
+
     return (
         <>
             { modalOpen ?
@@ -23,7 +33,7 @@ const LibraryItem = ({ metadata: { _id, name, duration, categories, tags }, clic
                         className="flex-none rounded-lg w-30 h-24 flex-shrink-0" />
                     <div className="w-full h-24 absolute top-0 left-0 z-[1] border-2 rounded-lg hidden fade playFade
                         border-solid border-blue-500 justify-center items-center">
-                        <button onClick={() => click(_id, name)}>
+                        <button onClick={play}>
                             <svg xmlns="http://www.w3.org/2000/svg"
                                 className="h-8 w-8 block hover:text-blue-500 cursor-pointer"
                                 viewBox="0 0 20 20" fill="currentColor">

@@ -22,7 +22,7 @@ const PlaylistListItem = ({ index, id, click }) => {
     }, []);
 
     return (
-        <div className="flex hover:bg-gray-600 md:p-4 py-2 hover:cursor-pointer" onClick={click}>
+        <div className="flex hover:bg-gray-600 md:p-4 py-2 hover:cursor-pointer" onClick={() => click(index)}>
             <div className="flex mr-10 items-center">
                 <span className="block md:mr-8 mr-4">{index + 1}</span>
                 <img src={metadata?.poster || "https://picsum.photos/100/100?id=" + id} alt=" "
