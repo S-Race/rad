@@ -48,8 +48,10 @@ const ProtectedRoutes = () => {
     const navigateList = async (direction) => {
         const next = currentItem + direction;
         if (next < currentList.items.length && next > -1) {
-            if (!currentList.items[next].name) // if name no exist, fetch it
+            if (!currentList.items[next].name) { // if name no exist, fetch it
                 currentList.items[next].name = await getItemName(currentList.items[next].track);
+                setCurrentList(currentList);
+            }
             setCurrentItem(currentItem + direction);
             return true;
         }
