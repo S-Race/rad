@@ -89,14 +89,12 @@ const useMusicPlayer = (navigateList) => {
         });
         setProgress(time.current, time.max);
         audioElement.current.addEventListener("ended", async () => {
-            setIsPlaying(false);
             // auto get next audio to play
-            await navigateList(1);
+            setIsPlaying(await navigateList(1));
         });
         audioElement.current.addEventListener("error", async () => {
-            setIsPlaying(false);
             // auto get next audio to play
-            await navigateList(1);
+            setIsPlaying(await navigateList(1));
         });
 
     }, [audioElement?.current?.readyState]);

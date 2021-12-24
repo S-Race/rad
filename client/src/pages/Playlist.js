@@ -52,7 +52,7 @@ const Playlists = () => {
                                 <div className="h-28 w-28 md:h-48 md:w-48 absolute top-0 left-0 z-[1]
                                     border-2 rounded-lg hidden fade playFade border-solid border-blue-500
                                     justify-center items-center">
-                                    <button>
+                                    <button onClick={() => onItemClickPlay(0)}>
                                         <svg xmlns="http://www.w3.org/2000/svg"
                                             className="h-12 w-12 block hover:text-blue-500 cursor-pointer"
                                             viewBox="0 0 20 20" fill="currentColor">
