@@ -42,7 +42,20 @@ module.exports.getPlaylists = async (req, res) => {
     if (!owner)
         return res.status(400).send({ msg: "Invalid params" });
 
-    Playlist.find({ owner }, (err, playlists) => {
+    let options = { owner };
+    if (req.query) {
+        const { search } = req.query;
+        if (search?.length > 0)
+            options = {
+                ...options,
+                name: {
+                    $regex: search,
+                    $options: "i"
+                }
+            };
+    }
+
+    Playlist.find(options, (err, playlists) => {
         if (err) {
             console.log(err);
             return res.status(500).send({ msg: err });

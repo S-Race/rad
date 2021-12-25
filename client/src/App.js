@@ -15,27 +15,30 @@ import Playlist from "./pages/Playlist";
 import ProtectedRoutes from "./components/ProtectedRoutes";
 import UnProtectedRoutes from "./components/UnProtectedRoutes";
 import { UserProvider } from "./UserContext";
+import { SearchProvider } from "./SearchContext";
 
 const App = () => {
     return (
         <Router>
             <UserProvider>
-                <NavBar/>
-                <Routes>
-                    <Route element={<UnProtectedRoutes/>}>
-                        <Route path="/login" element={<Login/>}/>
-                        <Route path="/signup" element={<Signup/>}/>
-                        <Route path="/" element={<Welcome/>}/>
-                    </Route>
-                    <Route element={<ProtectedRoutes/>}>
-                        <Route path="/dashboard" element={<Dashboard/>}/>
-                        <Route path="/playlist/:playlist_id" element={<Playlist/>}/>
-                        <Route path="/playlists" element={<Playlists/>}/>
-                        <Route path="/library" element={<Library/>}/>
-                        <Route path="/settings" element={<Settings/>}/>
-                    </Route>
-                    <Route path="*" element={<NotFound/>}/>
-                </Routes>
+                <SearchProvider>
+                    <NavBar/>
+                    <Routes>
+                        <Route element={<UnProtectedRoutes/>}>
+                            <Route path="/login" element={<Login/>}/>
+                            <Route path="/signup" element={<Signup/>}/>
+                            <Route path="/" element={<Welcome/>}/>
+                        </Route>
+                        <Route element={<ProtectedRoutes/>}>
+                            <Route path="/dashboard" element={<Dashboard/>}/>
+                            <Route path="/playlist/:playlist_id" element={<Playlist/>}/>
+                            <Route path="/playlists" element={<Playlists/>}/>
+                            <Route path="/library" element={<Library/>}/>
+                            <Route path="/settings" element={<Settings/>}/>
+                        </Route>
+                        <Route path="*" element={<NotFound/>}/>
+                    </Routes>
+                </SearchProvider>
             </UserProvider>
         </Router>
     );

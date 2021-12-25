@@ -4,11 +4,14 @@ import { useOutletContext } from "react-router-dom";
 import LibraryItem from "../components/LibraryItem";
 import Loader from "../components/Loader";
 import PageButton from "../components/PageButton";
+import { useSearchContext } from "../SearchContext";
 
 const Library = () => {
     const [libraryLoaded, setlibraryLoaded] = useState(false);
     const [library, setLibrary] = useState([]);
+
     const onItemClick = useOutletContext();
+    const { search } = useSearchContext();
 
     const [page, setPage] = useState({
         current: 1,
@@ -25,26 +28,26 @@ const Library = () => {
         });
     }, [page]);
 
-    useEffect(() => {
-        (async () => {
-            const data = await fetch("/api/libraryItems", {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                }
-            });
-            if (data.status === 200) {
-                const d = await data.json();
-                setLibrary(d);
-                setPage({
-                    current: 1,
-                    total: Math.ceil(d.length / WINDOW.current)
-                });
+    const getResults = async (query) => {
+        const data = await fetch("/api/libraryItems" + (query?.length > 1 ? "?search=" + query : ""), {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
             }
-            // TODO if error display an error message saying cant load the library
-            setlibraryLoaded(true);
-        })();
-    }, []);
+        });
+        if (data.status === 200) {
+            const d = await data.json();
+            setLibrary(d);
+            setPage({
+                current: 1,
+                total: Math.ceil(d.length / WINDOW.current)
+            });
+        }
+        // TODO if error display an error message saying cant load the library
+        setlibraryLoaded(true);
+    };
+
+    useEffect(() => getResults(search), [search]);
 
     return (
         <div className="bg-gray-800 text-gray-100 min-h-screen p-5">

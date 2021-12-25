@@ -2,9 +2,11 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 import { useUserContext } from "../UserContext";
+import { useSearchContext } from "../SearchContext";
 
 const NavBar = () => {
     const { user } = useUserContext();
+    const { search, setSearch } = useSearchContext();
 
     return (
         user.username ?
@@ -55,6 +57,8 @@ const NavBar = () => {
                                 className="px-4 py-2 w-40 focus:outline-none bg-gray-100
                                 focus:bg-blue-400 focus:text-gray-50 focus:placeholder-gray-50"
                                 placeholder="Search..."
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
                             />
                         </div>
                     </div>
