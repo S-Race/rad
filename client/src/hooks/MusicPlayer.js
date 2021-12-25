@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import { constrain } from "../commons";
 
-const useMusicPlayer = () => {
+const useMusicPlayer = (navigateList) => {
     const SPEEDS = ["1.0", "1.2", "1.5", "1.7", "2.0", "0.5", "0.7"];
     const audioElement = useRef(); // html5 audio element
     const progressBar = useRef(); // div that shows the progress
@@ -88,11 +88,13 @@ const useMusicPlayer = () => {
             max: seconds
         });
         setProgress(time.current, time.max);
-        audioElement.current.addEventListener("ended", () => setIsPlaying(false));
-        audioElement.current.addEventListener("error", () => {
-            setIsPlaying(false);
+        audioElement.current.addEventListener("ended", async () => {
             // auto get next audio to play
-            // ...
+            setIsPlaying(await navigateList(1));
+        });
+        audioElement.current.addEventListener("error", async () => {
+            // auto get next audio to play
+            setIsPlaying(await navigateList(1));
         });
 
     }, [audioElement?.current?.readyState]);

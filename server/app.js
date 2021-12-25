@@ -16,6 +16,9 @@ const libraryRouter = require("./routes/library");
 const deckRouter = require("./routes/deck");
 const audioRouter = require("./routes/audio");
 const libraryItemsRouter = require("./routes/libraries");
+const playlistsRouter = require("./routes/playlists");
+const playlistRouter = require("./routes/playlist");
+const songRouter = require("./routes/song");
 
 const app = express();
 
@@ -30,6 +33,9 @@ app.use("/api/library", libraryRouter);
 app.use("/api/deck", deckRouter);
 app.use("/api/audio", audioRouter);
 app.use("/api/libraryItems", libraryItemsRouter);
+app.use("/api/playlists", playlistsRouter);
+app.use("/api/playlist", playlistRouter);
+app.use("/api/song", songRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

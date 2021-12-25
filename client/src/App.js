@@ -9,6 +9,8 @@ import NavBar from "./components/NavBar";
 import Dashboard from "./pages/Dashboard";
 import Settings from "./pages/Settings";
 import Library from "./pages/Library";
+import Playlists from "./pages/Playlists";
+import Playlist from "./pages/Playlist";
 
 import ProtectedRoutes from "./components/ProtectedRoutes";
 import UnProtectedRoutes from "./components/UnProtectedRoutes";
@@ -27,6 +29,8 @@ const App = () => {
                     </Route>
                     <Route element={<ProtectedRoutes/>}>
                         <Route path="/dashboard" element={<Dashboard/>}/>
+                        <Route path="/playlist/:playlist_id" element={<Playlist/>}/>
+                        <Route path="/playlists" element={<Playlists/>}/>
                         <Route path="/library" element={<Library/>}/>
                         <Route path="/settings" element={<Settings/>}/>
                     </Route>
