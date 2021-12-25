@@ -8,9 +8,7 @@ module.exports.addLibrary = (req, res) => {
     MusicLibrary.find({ path }, (err, lib) => {
         if (err) {
             console.log(err);
-            res.status(500).send({
-                msg: err
-            });
+            return res.status(500).send({ msg: err });
         }
         if (lib?.length < 1) {
             const newLib = new MusicLibrary({ path });

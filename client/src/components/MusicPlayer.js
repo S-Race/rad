@@ -1,121 +1,42 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useEffect } from "react";
 
-import { calcDuration, constrain } from "../commons";
+import { calcDuration } from "../commons";
+import { useMusicPlayer } from "../hooks/MusicPlayer";
 
-const MusicPlayer = ({ name, track }) => {
-    const SPEEDS = ["1.0", "1.5", "2.0", "0.5"];
-    const audioElement = useRef(); // html5 audio element
-    const progressBar = useRef(); // div that shows the progress
-    const progressBarKnob = useRef(); // knob of the progress div
-    const animationRef = useRef(); // reference to animation frame used to update ui
-    const progressContainer = useRef(); // container of the entire slider
-    const speedRef = useRef(0); // current
 
-    const [isPlaying, setIsPlaying] = useState(false);
-    const [time, setTime] = useState({
-        current: 0,
-        max: 0
-    });
+const MusicPlayer = ({ track, songName, listName, navigateList }) => {
 
-    const SKIP = 30;
+    const {
+        isPlaying,
+        time,
+        audioElement,
+        progressBar,
+        progressBarKnob,
+        progressContainer,
+        togglePlayPause,
+        changePlaySpeed,
+        clickSeek,
+        seek,
+        changeTrack,
+        SKIP,
+        currentSpeed
+    } = useMusicPlayer(navigateList);
 
-    const changePlaySpeed = () => {
-        speedRef.current = (speedRef.current + 1) % SPEEDS.length;
-    };
-
-    const refreshAnimation = () => {
-        cancelAnimationFrame(animationRef.current);
-        animationRef.current = requestAnimationFrame(whilePlaying);
-    };
-
-    const togglePlayPause = () => {
-        const prevValue = isPlaying;
-        setIsPlaying(!prevValue);
-        if (!prevValue) {
-            audioElement.current.play();
-            animationRef.current = requestAnimationFrame(whilePlaying);
-        } else {
-            audioElement.current.pause();
-            cancelAnimationFrame(animationRef.current);
-        }
-    };
-
-    // update the ui elements as the audio plays
-    const whilePlaying = () => {
-        setTime({
-            ...time,
-            current: audioElement.current.currentTime,
-            max: audioElement.current.duration
-        });
-        audioElement.current.playbackRate = SPEEDS[speedRef.current];
-        setProgress(audioElement.current.currentTime, audioElement.current.duration);
-        animationRef.current = requestAnimationFrame(whilePlaying);
-    };
-
-    // this is called when u click on either of the 2 seek buttons
-    const clickSeek = (forward) => {
-        const offset = forward ? SKIP : -SKIP;
-        const currentTime = audioElement.current.currentTime;
-        const changeTime = constrain(currentTime + offset, 0, time.max);
-        audioElement.current.currentTime = changeTime;
-        setTime({ ...time, current: changeTime });
-        setProgress(changeTime, time.max);
-    };
-
-    // this is called when u drag the slider knob or a point on the slider itself
-    const seek = (e) => {
-        const min = progressContainer.current.getBoundingClientRect().x;
-        const width = progressContainer.current.getBoundingClientRect().width;
-
-        // calculate percentage played based on the size of the slider
-        const percentage = (Math.floor(constrain(e.clientX - min, 0, width)) / width);
-        const changeDuration = percentage * time.max;
-        audioElement.current.currentTime = changeDuration;
-        setTime({ ...time, current: changeDuration });
-        setProgress(changeDuration, time.max);
-    };
-
-    // update ui elements to reflect the progress of the audio
-    const setProgress = (current, max) => {
-        const percentage = max !== 0 && !isNaN(max) ? (current / max) * 100 : 0;
-        progressBar.current.style.setProperty("width", percentage + "%");
-        progressBarKnob.current.style.setProperty("left", percentage + "%");
-    };
-
-    useEffect(() => {
-        const seconds = Math.floor(audioElement.current.duration);
-        setTime({
-            ...time,
-            max: seconds
-        });
-        setProgress(time.current, time.max);
-        audioElement.current.addEventListener("ended", () => setIsPlaying(false));
-        audioElement.current.addEventListener("error", () => {
-            setIsPlaying(false);
-            // auto get next audio to play
-            // ...
-        });
-
-    }, [audioElement?.current?.readyState]);
-
-    useEffect(() => {
-        togglePlayPause();
-        audioElement.current.play();
-        setIsPlaying(true);
-        refreshAnimation();
-    }, [track]);
+    useEffect(() => changeTrack(), [track]);
 
     return (
         <div className="sticky bottom-0 z-20">
             <audio ref={audioElement} src={"/api/audio/" + track}></audio>
             {/* top panel */}
             <div className="bg-gray-900 border-blue-800 border-b rounded-t-xl p-4 flex items-end">
-                <img src={"https://picsum.photos/200/200?id=" + name} alt="" width="88" height="88"
+                <img src={"https://picsum.photos/200/200?id=" + songName}
+                    alt="" width="88" height="88"
                     className="flex-none rounded-lg bg-gray-700" />
                 <div className="w-full px-5">
                     <div className="min-w-0 flex-auto font-semibold my-2">
-                        <p className="text-gray-200 md:text-lg sm:text-base text-sm">{name}</p>
-                        <h2 className="text-gray-600 hidden sm:block sm:text-xs md:text-sm truncate">{track}</h2>
+                        <p className="text-gray-200 md:text-lg sm:text-base text-sm">
+                            {songName}</p>
+                        <h2 className="text-gray-600 hidden sm:block sm:text-xs md:text-sm truncate">{listName}</h2>
                     </div>
                     <div className="relative" onDragOver={seek} ref={progressContainer}>
                         <div className="bg-gray-700 rounded-full overflow-hidden cursor-pointer" onClick={seek}>
@@ -148,7 +69,7 @@ const MusicPlayer = ({ name, track }) => {
                                 strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                     </button>
-                    <button type="button">
+                    <button type="button" onClick={() => navigateList(-1)}>
                         <svg width="24" height="24" fill="none">
                             <path d="m10 12 8-6v12l-8-6Z" fill="currentColor" stroke="currentColor" strokeWidth="2"
                                 strokeLinecap="round" strokeLinejoin="round" />
@@ -206,7 +127,7 @@ const MusicPlayer = ({ name, track }) => {
                             <text x="22" y="16" fill="currentColor" fontWeight="bold" fontSize="10px">{SKIP}</text>
                         </svg>
                     </button>
-                    <button type="button">
+                    <button type="button" onClick={() => navigateList(1)}>
                         <svg width="24" height="24" fill="none">
                             <path d="M14 12 6 6v12l8-6Z" fill="currentColor" stroke="currentColor" strokeWidth="2"
                                 strokeLinecap="round" strokeLinejoin="round" />
@@ -218,7 +139,7 @@ const MusicPlayer = ({ name, track }) => {
                         type="button" onClick={changePlaySpeed}
                         className="rounded-lg text-xs leading-6 font-semibold px-2 ring-2
                         ring-inset ring-gray-200 text-gray-200">
-                        {SPEEDS[speedRef.current]}x
+                        {currentSpeed()}x
                     </button>
                 </div>
             </div>
