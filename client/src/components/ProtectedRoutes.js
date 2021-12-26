@@ -1,8 +1,10 @@
-import React, { useState }  from "react";
+import React, { useState, useEffect }  from "react";
 import { Outlet } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 import Login from "../pages/Login";
 import MusicPlayer from "../components/MusicPlayer";
+import Loader from "../components/Loader";
 
 import { useUserContext } from "../UserContext";
 
@@ -15,10 +17,14 @@ import { useUserContext } from "../UserContext";
 // }
 
 const ProtectedRoutes = () => {
-    const { user } = useUserContext();
+    const { user, dispatch, userActions } = useUserContext();
+    const navigate = useNavigate();
+
+    const [loading, setLoading] = useState(true);
     const [showPlayer, setShowPlayer] = useState(false);
     const [currentList, setCurrentList] = useState([]);
     const [currentItem, setCurrentItem] = useState(0);
+
 
     const onItemClick = async (list, first) => {
         const i = first || 0;
@@ -58,19 +64,43 @@ const ProtectedRoutes = () => {
         return false;
     };
 
-    return user?.username ?
-        <div className="bg-gray-900">
-            <Outlet context={onItemClick}/>
-            {
-                showPlayer ?
-                    <MusicPlayer songName={currentList.items[currentItem].name}
-                        listName={currentList.name} track={currentList.items[currentItem].track}
-                        navigateList={navigateList}/>
-                    :
-                    <></>
-            }
-        </div>
-        : <Login/>;
+    useEffect(() => {
+        const getToken = async () => {
+            const res = await fetch("/api/auth/token", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (res.status === 200) {
+                const { token, userInfo } = (await res.json());
+                dispatch({
+                    type: userActions.LOGIN,
+                    payload: { ...userInfo, token }
+                });
+                setLoading(false);
+            } else navigate("/login"); // couldn't get token ... probably due to no cookie
+        };
+
+        getToken();
+    }, []);
+
+    return loading ? <Loader text="Getting everything set for you"/> : (
+        user?.username ?
+            <div className="bg-gray-900">
+                <Outlet context={onItemClick}/>
+                {
+                    showPlayer ?
+                        <MusicPlayer songName={currentList.items[currentItem].name}
+                            listName={currentList.name} track={currentList.items[currentItem].track}
+                            navigateList={navigateList}/>
+                        :
+                        <></>
+                }
+            </div>
+            : <Login/>
+    );
 };
 
 export default ProtectedRoutes;

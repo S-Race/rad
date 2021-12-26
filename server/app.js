@@ -1,12 +1,14 @@
 const createError = require("http-errors");
 const express = require("express");
+const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 const os = require("os");
 
-//environment variables configuration
+// environment variables configuration
 require("dotenv").config();
 
 global.env = process.env.NODE_ENV || "development";
+global.TOKEN_SECRET = process.env.TOKEN_SECRET;
 global.HOME = os.homedir();
 
 // Server routes
@@ -24,11 +26,29 @@ const app = express();
 
 // app.use(morganLogger);
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.static("client/build"));
 
+// Middleware to verify the jwt
+const jwt = require("express-jwt");
+
+// protected all routes behind jwt, except routes used to login and get token
+app.use(
+    jwt({
+        secret: global.TOKEN_SECRET,
+        algorithms: ["HS256"],
+        getToken: (req) => {
+            if (req.headers.authorization?.split(" ")[0] === "Bearer")
+                return req.headers.authorization.split(" ")[1];
+            else if (req.query?.token)
+                return req.query.token;
+            else return null;
+        }
+    }).unless((req) => req.originalUrl.includes("/api/auth"))
+);
+
 app.use("/api/auth", authRouter);
-app.use("/api/ls", lsRouter); // this route needs to be protected by auth at some point
-// actually pretty much every route except auth will have to be protected
+app.use("/api/ls", lsRouter);
 app.use("/api/library", libraryRouter);
 app.use("/api/deck", deckRouter);
 app.use("/api/audio", audioRouter);

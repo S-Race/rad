@@ -11,10 +11,12 @@ const AddPlaylist = ({ headerText="Add to Playlist", finish, item_id }) => {
     useEffect(() => {
         // get list of playlists to provide options to add
         (async () => {
+            // will change this cuz the server should kno the user id from the token now
             const res = await fetch("/api/playlists/" + user.id, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": `Bearer ${user.token}`,
                 },
             });
 
@@ -29,10 +31,12 @@ const AddPlaylist = ({ headerText="Add to Playlist", finish, item_id }) => {
 
     const addItemToPlaylist = async (id) => {
         // add item to existing playlist
+        // will change this cuz the server should kno the user id from the token now
         fetch(`/api/playlist/${id}/${item_id}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${user.token}`,
             },
         }).then(res => {
             if (res.status !== 201) {
@@ -56,6 +60,7 @@ const AddPlaylist = ({ headerText="Add to Playlist", finish, item_id }) => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${user.token}`,
             },
             body: JSON.stringify({
                 owner: user.id,

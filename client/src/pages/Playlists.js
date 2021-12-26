@@ -11,17 +11,20 @@ const Playlists = () => {
     const [playlistsLoaded, setPlaylistsLoaded] = useState(false);
     const [playlists, setPlaylists] = useState([]);
 
-    const { user } = useUserContext();
     const navigate = useNavigate();
+
+    const { user } = useUserContext();
     const { search } = useSearchContext();
 
     const onItemClick = id => navigate("/playlist/" + id);
 
     const getResults = async (query) => {
+        // will change this cuz the server should kno the user id from the token now
         const res = await fetch("/api/playlists/" + user.id + (query?.length > 1 ? "?search=" + query : ""), {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${user.token}`,
             },
         });
 

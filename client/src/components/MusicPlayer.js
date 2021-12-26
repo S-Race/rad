@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 
 import { calcDuration } from "../commons";
 import { useMusicPlayer } from "../hooks/MusicPlayer";
-
+import { useUserContext } from "../UserContext";
 
 const MusicPlayer = ({ track, songName, listName, navigateList }) => {
 
@@ -22,11 +22,13 @@ const MusicPlayer = ({ track, songName, listName, navigateList }) => {
         currentSpeed
     } = useMusicPlayer(navigateList);
 
+    const { user: { token } } = useUserContext();
+
     useEffect(() => changeTrack(), [track]);
 
     return (
         <div className="sticky bottom-0 z-20">
-            <audio ref={audioElement} src={"/api/audio/" + track}></audio>
+            <audio ref={audioElement} src={`/api/audio/${track}?token=${token}`}></audio>
             {/* top panel */}
             <div className="bg-gray-900 border-blue-800 border-b rounded-t-xl p-4 flex items-end">
                 <img src={"https://picsum.photos/200/200?id=" + songName}

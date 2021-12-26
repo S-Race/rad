@@ -2,17 +2,21 @@ import React, { useState, useEffect } from "react";
 
 import Modal from "../components/Modal";
 import DirectoryChooser from "../components/DirectoryChooser";
+import { useUserContext } from "../UserContext";
 
 const Settings = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const closeModal = () => setModalOpen(false);
     const [libraries, setLibraries] = useState([]);
 
+    const { user: { token } } = useUserContext();
+
     const addLibrary = path => {
         fetch("/api/library", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
             },
             body: JSON.stringify({ path })
         }).then(res => {
@@ -35,6 +39,7 @@ const Settings = () => {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
                 },
             });
             if (res.status === 200)
