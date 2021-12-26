@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
 const COOKIE_MAX_AGE = 4 * 24 * 60 * 60; // 4 days
+const HASH_ROUNDS = 12;
 
 const createAuthCookie = (res, username, id) => {
     return res.cookie("radLoginCookie",
@@ -10,6 +11,7 @@ const createAuthCookie = (res, username, id) => {
             httpOnly: true, // You can't access these tokens in the client's javascript
             secure: global.env === "production",
             maxAge: COOKIE_MAX_AGE,
+            sameSite: "Lax"
         }
     );
 };
@@ -58,13 +60,13 @@ module.exports.createUser = (req, res) => {
         if (user?.length < 1) {
             try {
                 // this can only hash 72 bytes
-                const hash = bcrypt.hashSync(password, 15); // this can throw an exception
+                const hash = bcrypt.hashSync(password, HASH_ROUNDS); // this can throw an exception
 
                 const newUser = new User({ username, password: hash });
                 newUser.save().then(savedUser => {
                     if (savedUser === newUser) { // if savedUser returned is the same as newUser then saved successfully
                         // send back a cookie for user to use to get the jwt token
-                        createAuthCookie(res, user.username, user._id)
+                        createAuthCookie(res, savedUser.username, savedUser._id)
                             .status(201)
                             .send({ msg: "User created successfully" });
                     } else res.status(500).send({ msg: "User creation failed" });

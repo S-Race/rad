@@ -13,18 +13,17 @@ const Playlists = () => {
 
     const navigate = useNavigate();
 
-    const { user } = useUserContext();
+    const { user: { token } } = useUserContext();
     const { search } = useSearchContext();
 
     const onItemClick = id => navigate("/playlist/" + id);
 
     const getResults = async (query) => {
-        // will change this cuz the server should kno the user id from the token now
-        const res = await fetch("/api/playlists/" + user.id + (query?.length > 1 ? "?search=" + query : ""), {
+        const res = await fetch("/api/playlists" + (query?.length > 1 ? "?search=" + query : ""), {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${user.token}`,
+                "Authorization": `Bearer ${token}`,
             },
         });
 
@@ -43,12 +42,15 @@ const Playlists = () => {
         <div className="bg-gray-800 text-gray-100 min-h-screen p-5">
             {
                 playlistsLoaded ? (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                        { playlists.map((item, i) =>
-                            <div key={i}>
-                                <PlaylistItem poster={item.poster || "https://picsum.photos/200/200?id=" + item.name}
-                                    name={item.name} id={item._id} click={onItemClick} />
-                            </div>)
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        {
+                            playlists?.length < 1 ? <h1 className="text-3xl">You have no playlists</h1> :
+                                playlists.map((item, i) =>
+                                    <div key={i}>
+                                        <PlaylistItem poster={item.poster || "https://picsum.photos/200/200?id=" + item.name}
+                                            name={item.name} id={item._id} click={onItemClick} />
+                                    </div>
+                                )
                         }
                     </div>
                 ) : <Loader text="Loading your playlists"/>

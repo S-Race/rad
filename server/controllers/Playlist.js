@@ -2,9 +2,11 @@ const Playlist = require("../models/playlist");
 
 // Add a new playlist
 module.exports.addPlaylist = (req, res) => {
-    const { owner, name, items } = req.body;
-    if (!owner || !name)
-        return res.status(400).send({ msg: "Invalid params" });
+    const { name, items } = req.body;
+    const { id: owner } = req.user;
+
+    if (!name)
+        return res.status(400).send({ msg: "Playlist name not provided" });
 
     const newPlaylist = new Playlist({ owner, name, items: items || [] });
     newPlaylist.save().then(savedPlaylist => {
@@ -37,10 +39,7 @@ module.exports.getPlaylist = async (req, res) => {
 
 // get all playlist by specific owner
 module.exports.getPlaylists = async (req, res) => {
-    const { owner } = req.params;
-
-    if (!owner)
-        return res.status(400).send({ msg: "Invalid params" });
+    const { id: owner } = req.user;
 
     let options = { owner };
     if (req.query) {

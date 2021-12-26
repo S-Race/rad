@@ -1,8 +1,7 @@
 import React, { useState, useEffect }  from "react";
-import { Outlet } from "react-router";
 import { useNavigate } from "react-router-dom";
+import { Outlet } from "react-router";
 
-import Login from "../pages/Login";
 import MusicPlayer from "../components/MusicPlayer";
 import Loader from "../components/Loader";
 
@@ -40,6 +39,7 @@ const ProtectedRoutes = () => {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${user.token}`,
             },
         });
 
@@ -84,7 +84,7 @@ const ProtectedRoutes = () => {
         };
 
         getToken();
-    }, []);
+    }, [user?.username]);
 
     return loading ? <Loader text="Getting everything set for you"/> : (
         user?.username ?
@@ -99,7 +99,7 @@ const ProtectedRoutes = () => {
                         <></>
                 }
             </div>
-            : <Login/>
+            : <></>
     );
 };
 
