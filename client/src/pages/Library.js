@@ -4,7 +4,9 @@ import { useOutletContext } from "react-router-dom";
 import LibraryItem from "../components/LibraryItem";
 import Loader from "../components/Loader";
 import PageButton from "../components/PageButton";
+
 import { useSearchContext } from "../SearchContext";
+import { useUserContext } from "../UserContext";
 
 const Library = () => {
     const [libraryLoaded, setlibraryLoaded] = useState(false);
@@ -12,6 +14,7 @@ const Library = () => {
 
     const onItemClick = useOutletContext();
     const { search } = useSearchContext();
+    const { user: { token } } = useUserContext();
 
     const [page, setPage] = useState({
         current: 1,
@@ -33,6 +36,7 @@ const Library = () => {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
             }
         });
         if (data.status === 200) {

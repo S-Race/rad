@@ -1,6 +1,6 @@
-var express = require("express");
-var router = express.Router();
-var controller = require("../controllers/Song");
+const express = require("express");
+const router = express.Router();
+const controller = require("../controllers/Song");
 
 router
     .get("/:id", controller.getSong);

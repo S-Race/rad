@@ -6,15 +6,16 @@ import { useUserContext } from "../UserContext";
 const AddPlaylist = ({ headerText="Add to Playlist", finish, item_id }) => {
     const [playlistName, setPlaylistName] = useState("");
     const [playlists, setPlaylists] = useState([]);
-    const { user } = useUserContext();
+    const { user: { token } } = useUserContext();
 
     useEffect(() => {
         // get list of playlists to provide options to add
         (async () => {
-            const res = await fetch("/api/playlists/" + user.id, {
+            const res = await fetch("/api/playlists/", {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
                 },
             });
 
@@ -33,6 +34,7 @@ const AddPlaylist = ({ headerText="Add to Playlist", finish, item_id }) => {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
             },
         }).then(res => {
             if (res.status !== 201) {
@@ -56,9 +58,9 @@ const AddPlaylist = ({ headerText="Add to Playlist", finish, item_id }) => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
             },
             body: JSON.stringify({
-                owner: user.id,
                 name: playlistName,
                 items: [item_id]
             })

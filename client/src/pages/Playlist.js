@@ -6,12 +6,15 @@ import "../styles/audio_item.css";
 
 import Loader from "../components/Loader";
 import PlaylistListItem from "../components/PlaylistListItem";
+import { useUserContext } from "../UserContext";
 
 const Playlists = () => {
     const [playlistLoaded, setPlaylistLoaded] = useState(false);
     const [playlist, setPlaylist] = useState([]);
     const { playlist_id } = useParams();
+
     const onItemClick = useOutletContext();
+    const { user: { token } } = useUserContext();
 
     const onItemClickPlay = index => {
         onItemClick({
@@ -27,6 +30,7 @@ const Playlists = () => {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
                 },
             });
 

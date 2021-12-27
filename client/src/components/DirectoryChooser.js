@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
 
+import { useUserContext } from "../UserContext";
+
 const DirectoryChooser = ({ headerText="Choose A Directory", onClickAdd, onCancel }) => {
     const [path, setPath] = useState("");
     const [dirs, setDirs] = useState([]);
     const [isRoot, setIsRoot] = useState(true);
+
+    const { user: { token } } = useUserContext();
 
     useEffect(() => {
         // get dir listing from root at the server
@@ -12,6 +16,7 @@ const DirectoryChooser = ({ headerText="Choose A Directory", onClickAdd, onCance
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
                 },
             });
 
@@ -34,6 +39,7 @@ const DirectoryChooser = ({ headerText="Choose A Directory", onClickAdd, onCance
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
             },
             body: JSON.stringify({ dir })
         }).then(res => {

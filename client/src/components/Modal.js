@@ -6,7 +6,7 @@ const Modal = ({ children, open, close }) => {
     const modal = useRef();
 
     const shouldClose = e => {
-        if (e.target === modal.current)
+        if (e.target === modal.current && close)
             close();
     };
 

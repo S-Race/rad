@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 
+import { useUserContext } from "../UserContext";
 import Carousel from "../components/Carousel";
 import Loader from "../components/Loader";
 
@@ -8,6 +9,8 @@ const Dashboard = () => {
     const [deckLoaded, setDeckLoaded] = useState(false);
     const [deck, setDeck] = useState({});
     const onItemClick = useOutletContext();
+    const { user: { token } } = useUserContext();
+
 
     useEffect(() => {
         (async () => {
@@ -15,6 +18,7 @@ const Dashboard = () => {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
                 }
             });
             if (data.status === 200)

@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
 
+import { useUserContext } from "../UserContext";
+
 const PlaylistListItem = ({ index, id, click }) => {
     const [metadata, setMetadata] = useState({});
+
+    const { user: { token } } = useUserContext();
 
     useEffect(() => {
         (async () => {
@@ -9,6 +13,7 @@ const PlaylistListItem = ({ index, id, click }) => {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
                 },
             });
 

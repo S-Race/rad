@@ -1,40 +1,52 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import FormInput from "../components/FormInput";
 import "../styles/login_signup.css";
 
-import { useUserContext } from "../UserContext";
-
 const Signup = () => {
-    const [username, setUsername] = useState("");
+    const [user, setUser] = useState({
+        username: "",
+        password: "",
+        confirmPassword: ""
+    });
     const navigate = useNavigate();
-    const { dispatch, userActions } = useUserContext();
+
+    const updateUser = (e) => {
+        setUser({
+            ...user,
+            [e.target.name]: e.target.value
+        });
+    };
+
+    const isValid = () => {
+        if (user.username.length < 1 || user.password.length < 1 || user.confirmPassword.length < 1)
+            return false;
+        if (user.password !== user.confirmPassword) {
+            alert("Passwords do not match");
+            return false;
+        }
+        return true;
+    };
 
     const signup = e => {
         e.preventDefault();
-        if (!username) return;
 
-        fetch("/api/auth/" + username, {
+        if (!isValid()) return;
+
+        fetch("/api/auth/signup", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
+            body: JSON.stringify({ username: user.username, password: user.password })
         }).then(res => {
             res.json().then(json => {
                 // if response status code is not 201, user creation error
                 if (res.status !== 201)
                     alert(json.msg);
-                else {
-                    // auto login user after sign and redirect them to the dashboard
-                    dispatch({
-                        type: userActions.LOGIN,
-                        payload: {
-                            username: json.username,
-                            id: json.id,
-                        }
-                    });
-                    console.log(json.username);
-                    navigate("/dashboard");
-                }
+                // navigate to dashboard which is protected route, therefore protected routes
+                // component will try to get the token based on the cookie we just received
+                else navigate("/dashboard");
             }).catch(e => console.log(e));
         }).catch((e) => console.log(e));
     };
@@ -42,22 +54,13 @@ const Signup = () => {
     return (
         <div className="bg-gray-800 h-screen flex items-center wave">
             <div className="py-20 px-16 rounded-md md:w-1/2 mx-auto glass shadow-xl z-10">
-                <h2 className="text-center mb-4 text-2xl text-gray-300">Enter a desired username</h2>
+                <h2 className="text-center mb-4 text-2xl text-gray-300">Create an account below</h2>
                 <form className="h-1/2">
-                    <div className="relative mt-5 mb-10 mx-0">
-                        <input
-                            className="bg-transparent border-b-2 border-solid border-gray-300 block w-full py-4
-                                text-lg text-gray-300 focus:outline-none focus:border-blue-600 valid:outline-none
-                                valid:border-blue-600"
-                            type="text"
-                            onChange={e => setUsername(e.target.value)}
-                            value={username}
-                            required
-                        />
-                        <label className="absolute top-4 left-0 pointer-events-none">
-                            <span className="text-lg block text-gray-300">Username</span>
-                        </label>
-                    </div>
+                    <FormInput label="Username" onChange={updateUser} value={user.username} name="username"/>
+                    <FormInput label="Password" onChange={updateUser}
+                        value={user.password} name="password" type="password"/>
+                    <FormInput label="Confirm Password" onChange={updateUser}
+                        value={user.confirmPassword} name="confirmPassword" type="password"/>
                     <button onClick={signup} className="w-full bg-blue-600 hover:bg-blue-700 p-4 text-gray-300
                         text-base border-none border-r-4 focus:outline-none transform hover:scale-95">
                         Register
