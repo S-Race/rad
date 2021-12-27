@@ -77,7 +77,8 @@ const NavBar = () => {
                                     w-28 rounded-sm">
                                     <div className="p-2">Account</div>
                                     <hr className="border-1 mx-1 border-gray-500"/>
-                                    <div className="flex justify-between p-2 items-center cursor-pointer" onClick={logout}>
+                                    <div onClick={logout}
+                                        className="flex justify-between p-2 items-center cursor-pointer">
                                         <span>Log out</span>
                                         <Signout width="20" height="20"/>
                                     </div>

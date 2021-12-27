@@ -12,9 +12,7 @@ const Playlists = () => {
     const [playlists, setPlaylists] = useState([]);
 
     const navigate = useNavigate();
-  
-    const { user } = useUserContext();
-    const { search } = useSearchContext();
+
     const { user: { token } } = useUserContext();
     const { search } = useSearchContext();
 
@@ -49,7 +47,8 @@ const Playlists = () => {
                             playlists?.length < 1 ? <h1 className="text-3xl">You have no playlists</h1> :
                                 playlists.map((item, i) =>
                                     <div key={i}>
-                                        <PlaylistItem poster={item.poster || "https://picsum.photos/200/200?id=" + item.name}
+                                        <PlaylistItem
+                                            poster={item.poster || "https://picsum.photos/200/200?id=" + item.name}
                                             name={item.name} id={item._id} click={onItemClick} />
                                     </div>
                                 )
