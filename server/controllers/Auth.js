@@ -2,7 +2,7 @@ const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
-const COOKIE_MAX_AGE = 4 * 24 * 60 * 60; // 4 days
+const COOKIE_MAX_AGE = 4 * 24 * 60 * 60 * 1000; // 4 days
 const HASH_ROUNDS = 12;
 
 const createAuthCookie = (res, username, id) => {
