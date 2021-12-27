@@ -1,8 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import { calcDuration } from "../commons";
 import { useMusicPlayer } from "../hooks/MusicPlayer";
 import { useUserContext } from "../UserContext";
+
+import VolumeMute from "../assets/icons/VolumeMute";
+import VolumeMiddle from "../assets/icons/VolumeMiddle";
+import VolumeHigh from "../assets/icons/VolumeHigh";
 
 const MusicPlayer = ({ track, songName, listName, navigateList }) => {
 
@@ -15,19 +19,29 @@ const MusicPlayer = ({ track, songName, listName, navigateList }) => {
         progressContainer,
         togglePlayPause,
         changePlaySpeed,
+        changeVolume,
         clickSeek,
         seek,
         changeTrack,
         SKIP,
-        currentSpeed
+        currentSpeed,
+        currentVolume
     } = useMusicPlayer(navigateList);
 
     const { user: { token } } = useUserContext();
 
     useEffect(() => changeTrack(), [track]);
 
+    const determineVolumeIcon = () => {
+        return currentVolume < 0.02 ? <VolumeMute width="15" height="15"/> :
+            (currentVolume < 0.65 ? <VolumeMiddle width="15" height="15"/> : <VolumeHigh width="15" height="15"/>);
+    };
+
+    const [volumeIcon, setVolumeIcon] = useState(determineVolumeIcon());
+    useEffect(() => setVolumeIcon(determineVolumeIcon()), [currentVolume]);
+
     return (
-        <div className="sticky bottom-0 z-20">
+        <div className="sticky bottom-0 z-[5]">
             <audio ref={audioElement} src={`/api/audio/${track}?token=${token}`}></audio>
             {/* top panel */}
             <div className="bg-gray-900 border-blue-800 border-b rounded-t-xl p-4 flex items-end">
@@ -63,14 +77,12 @@ const MusicPlayer = ({ track, songName, listName, navigateList }) => {
             <div className="bg-blue-800 text-gray-200 flex items-center py-4">
                 {/* left side buttons */}
                 <div className="flex-auto flex items-center justify-evenly">
-                    <button type="button">
-                        <svg width="24" height="24">
-                            <path
-                                d="M7 6.931C7 5.865 7.853 5 8.905 5h6.19C16.147 5 17 5.865 17 6.931V19l-5-4-5 4V6.931Z"
-                                fill="currentColor" stroke="currentColor" strokeWidth="2"
-                                strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                    </button>
+                    <div className="flex items-center">
+                        { volumeIcon }
+                        <input type="range" min="0" max="1" value={currentVolume} step="0.01"
+                            onChange={(e) => changeVolume(e.target.value)}
+                            className="w-12 md:w-16 h-0.5 ml-2 outline-none"/>
+                    </div>
                     <button type="button" onClick={() => navigateList(-1)}>
                         <svg width="24" height="24" fill="none">
                             <path d="m10 12 8-6v12l-8-6Z" fill="currentColor" stroke="currentColor" strokeWidth="2"

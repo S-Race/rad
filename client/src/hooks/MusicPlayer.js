@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { constrain } from "../commons";
 
 const useMusicPlayer = (navigateList) => {
@@ -9,6 +9,7 @@ const useMusicPlayer = (navigateList) => {
     const animationRef = useRef(); // reference to animation frame used to update ui
     const progressContainer = useRef(); // container of the entire slider
     const speedRef = useRef(0); // current
+    const volumeRef = useRef(1); // init to 100%
 
     const [isPlaying, setIsPlaying] = useState(false);
     const [time, setTime] = useState({
@@ -17,6 +18,8 @@ const useMusicPlayer = (navigateList) => {
     });
 
     const SKIP = 30;
+
+    const changeVolume = amount => volumeRef.current = constrain(amount, 0, 1);
 
     const changePlaySpeed = () => {
         speedRef.current = (speedRef.current + 1) % SPEEDS.length;
@@ -47,6 +50,7 @@ const useMusicPlayer = (navigateList) => {
             max: audioElement.current.duration
         });
         audioElement.current.playbackRate = SPEEDS[speedRef.current];
+        audioElement.current.volume = volumeRef.current;
         setProgress(audioElement.current.currentTime, audioElement.current.duration);
         animationRef.current = requestAnimationFrame(whilePlaying);
     };
@@ -117,11 +121,13 @@ const useMusicPlayer = (navigateList) => {
         progressContainer,
         togglePlayPause,
         changePlaySpeed,
+        changeVolume,
         clickSeek,
         seek,
         changeTrack,
         SKIP,
-        currentSpeed
+        currentSpeed,
+        currentVolume: volumeRef.current
     };
 };
 
