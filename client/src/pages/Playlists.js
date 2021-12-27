@@ -12,7 +12,9 @@ const Playlists = () => {
     const [playlists, setPlaylists] = useState([]);
 
     const navigate = useNavigate();
-
+  
+    const { user } = useUserContext();
+    const { search } = useSearchContext();
     const { user: { token } } = useUserContext();
     const { search } = useSearchContext();
 
