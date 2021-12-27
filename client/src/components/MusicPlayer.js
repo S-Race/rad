@@ -25,7 +25,8 @@ const MusicPlayer = ({ track, songName, listName, navigateList }) => {
         changeTrack,
         SKIP,
         currentSpeed,
-        currentVolume
+        currentVolume,
+        buffers
     } = useMusicPlayer(navigateList);
 
     const { user: { token } } = useUserContext();
@@ -55,12 +56,15 @@ const MusicPlayer = ({ track, songName, listName, navigateList }) => {
                         <h2 className="text-gray-600 hidden sm:block sm:text-xs md:text-sm truncate">{listName}</h2>
                     </div>
                     <div className="relative" onDragOver={seek} ref={progressContainer}>
-                        <div className="bg-gray-700 rounded-full overflow-hidden cursor-pointer" onClick={seek}>
-                            <div ref={progressBar} className="bg-blue-700 h-2" role="progressbar"
+                        <div className="bg-gray-700 rounded-full overflow-hidden cursor-pointer relative" onClick={seek}>
+                            <div ref={progressBar} className="bg-blue-700 h-2 relative z-[4]" role="progressbar"
                                 aria-valuenow={time.current} aria-valuemin="0" aria-valuemax={time.max}></div>
+                            { buffers?.map((b, i) => <div role="buffer" key={i}
+                                className={"bg-blue-500 h-2 absolute z-[2] top-0 rounded-sm"}
+                                style={{ width: b.width, left: b.start }}></div> )}
                         </div>
                         <div ref={progressBarKnob} draggable
-                            className="ring-blue-600 ring-2 absolute top-1/2 w-4 h-4 -mt-2 -ml-2 flex
+                            className="ring-blue-600 ring-2 absolute top-1/2 w-4 h-4 -mt-2 -ml-2 flex z-[5]
                                 items-center justify-center bg-white rounded-full shadow cursor-pointer">
                             <div className="w-1.5 h-1.5 bg-blue-600 rounded-full
                                 ring-1 ring-inset ring-gray-900/5"></div>

@@ -16,6 +16,7 @@ const useMusicPlayer = (navigateList) => {
         current: 0,
         max: 0
     });
+    const [buffers, setBuffers] = useState([]);
 
     const SKIP = 30;
 
@@ -52,6 +53,7 @@ const useMusicPlayer = (navigateList) => {
         audioElement.current.playbackRate = SPEEDS[speedRef.current];
         audioElement.current.volume = volumeRef.current;
         setProgress(audioElement.current.currentTime, audioElement.current.duration);
+        updateBuffers(audioElement.current.duration);
         animationRef.current = requestAnimationFrame(whilePlaying);
     };
 
@@ -112,6 +114,26 @@ const useMusicPlayer = (navigateList) => {
 
     const currentSpeed = () => SPEEDS[speedRef.current];
 
+    const updateBuffers = (max) => {
+        const { buffered }  = audioElement.current;
+        if (!buffered) return [];
+
+        const width = progressContainer.current.getBoundingClientRect().width;
+
+        let list = [];
+        for (let i = 0; i < buffered.length; i++) {
+            const startPercentage = buffered.start(i) / max;
+            const endPercentage = buffered.end(i) / max;
+            const bufferWidth = (endPercentage - startPercentage) * width;
+
+            list.push({
+                start: Math.floor(startPercentage * 100) + "%",
+                width: Math.floor(bufferWidth) + "px"
+            });
+        }
+        setBuffers(list);
+    };
+
     return {
         isPlaying,
         time,
@@ -127,7 +149,8 @@ const useMusicPlayer = (navigateList) => {
         changeTrack,
         SKIP,
         currentSpeed,
-        currentVolume: volumeRef.current
+        currentVolume: volumeRef.current,
+        buffers
     };
 };
 
