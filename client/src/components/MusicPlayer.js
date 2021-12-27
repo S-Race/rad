@@ -56,7 +56,8 @@ const MusicPlayer = ({ track, songName, listName, navigateList }) => {
                         <h2 className="text-gray-600 hidden sm:block sm:text-xs md:text-sm truncate">{listName}</h2>
                     </div>
                     <div className="relative" onDragOver={seek} ref={progressContainer}>
-                        <div className="bg-gray-700 rounded-full overflow-hidden cursor-pointer relative" onClick={seek}>
+                        <div onClick={seek}
+                            className="bg-gray-700 rounded-full overflow-hidden cursor-pointer relative">
                             <div ref={progressBar} className="bg-blue-700 h-2 relative z-[4]" role="progressbar"
                                 aria-valuenow={time.current} aria-valuemin="0" aria-valuemax={time.max}></div>
                             { buffers?.map((b, i) => <div role="buffer" key={i}
