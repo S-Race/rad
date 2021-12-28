@@ -53,7 +53,7 @@ const Signup = () => {
 
     return (
         <div className="bg-gray-800 h-screen flex items-center wave">
-            <div className="py-20 px-16 rounded-md md:w-1/2 mx-auto glass shadow-xl z-10">
+            <div className="py-20 px-16 rounded-md md:w-1/2 mx-auto glass shadow-xl z-[5]">
                 <h2 className="text-center mb-4 text-2xl text-gray-300">Create an account below</h2>
                 <form className="h-1/2">
                     <FormInput label="Username" onChange={updateUser} value={user.username} name="username"/>

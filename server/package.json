@@ -1,5 +1,5 @@
 {
-    "name": "track_pron_dl_server",
+    "name": "rad_server",
     "version": "0.1.0",
     "private": true,
     "scripts": {
