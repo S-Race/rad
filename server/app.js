@@ -27,7 +27,8 @@ const app = express();
 // app.use(morganLogger);
 app.use(express.json());
 app.use(cookieParser());
-app.use(express.static("client/build"));
+app.use("/", express.static("client/build"));
+app.use("/", express.static(global.env === "development" ? "static" : "server/static"));
 
 // Middleware to verify the jwt
 const jwt = require("express-jwt");
