@@ -14,6 +14,7 @@ const songSchema = new Schema({
         type: String,
         required: true
     },
+    duration: Number,
     poster: String,
     tags: [String],
     categories: [String]

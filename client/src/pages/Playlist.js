@@ -73,7 +73,7 @@ const Playlists = () => {
                         </div>
                         <div className="flex my-2 justify-between">
                             <span>{playlist.items.length + " item" + (playlist.items.length !== 1 ? "s" : "")}</span>
-                            <span>- min</span>
+                            {/* <span>- min</span> */}
                         </div>
                         <div className="flex flex-col">
                             { playlist.items.map((item, i) =>

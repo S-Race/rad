@@ -19,7 +19,8 @@ module.exports.getSong = (req, res) => {
             name: song.name,
             poster: song.poster,
             categories: song.categories,
-            tags: song.tags
+            tags: song.tags,
+            duration: song.duration
         });
     });
 };

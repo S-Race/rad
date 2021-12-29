@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import { useUserContext } from "../UserContext";
+import { calcDuration } from "../commons";
 
 const PlaylistListItem = ({ index, id, click }) => {
     const [metadata, setMetadata] = useState({});
@@ -18,7 +19,7 @@ const PlaylistListItem = ({ index, id, click }) => {
             });
 
             if (res.status !== 200) {
-                alert("A critical error occurred");
+                // alert("A critical error occurred");
                 return;
             }
 
@@ -35,8 +36,7 @@ const PlaylistListItem = ({ index, id, click }) => {
             </div>
             <div className="flex justify-between items-center w-full">
                 <span className="block">{metadata?.name}</span>
-                {/* for duration */}
-                <span className="block">-</span>
+                <span className="block">{calcDuration(metadata?.duration)}</span>
             </div>
         </div>
     );

@@ -10,6 +10,8 @@ require("dotenv").config();
 global.env = process.env.NODE_ENV || "development";
 global.TOKEN_SECRET = process.env.TOKEN_SECRET;
 global.HOME = os.homedir();
+global.FFMPEG_PATH = process.env.FFMPEG_PATH;
+global.FFPROBE_PATH = process.env.FFPROBE_PATH;
 
 // Server routes
 const authRouter = require("./routes/auth");
