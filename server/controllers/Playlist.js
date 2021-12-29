@@ -12,8 +12,8 @@ module.exports.addPlaylist = (req, res) => {
     newPlaylist.save().then(savedPlaylist => {
         // if newPlaylist returned is the same as savedPlaylist then saved successfully
         if (savedPlaylist === newPlaylist) {
-            res.status(201).send({ msg: "Playlist created successfully" });
-        } else res.status(500).send({ msg: "Failed to create playlist" });
+            return res.status(201).send({ msg: "Playlist created successfully" });
+        } else return res.status(500).send({ msg: "Failed to create playlist" });
     });
 };
 
@@ -33,7 +33,7 @@ module.exports.getPlaylist = async (req, res) => {
         if (!playlist)
             return res.status(404).send({ msg: "Playlist not found" });
 
-        res.status(200).send(playlist);
+        return res.status(200).send(playlist);
     });
 };
 
@@ -79,7 +79,7 @@ module.exports.addItemToPlaylist = async  (req, res) => {
             return res.status(500).send({ msg: err });
         }
 
-        if (playlist?.length < 1)
+        if (!playlist)
             return res.status(404).send({ msg: "Bad playlist id" });
 
         if (playlist.items.some(i => i+"" === song_id+""))

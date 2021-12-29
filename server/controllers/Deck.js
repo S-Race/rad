@@ -8,9 +8,7 @@ module.exports.getDeckItems = (_, res) => {
     Song.find({}, { "_id": 1, "name": 1, "poster": 1 }, (err, songs) => {
         if (err) {
             console.log(err);
-            res.status(500).send({
-                msg: err
-            });
+            return res.status(500).send({ msg: err });
         }
 
         // get recommend music ... for just return some random tracks from the db
@@ -38,7 +36,7 @@ module.exports.getDeckItems = (_, res) => {
             continueListening.push(songs[random]);
         }
 
-        res.status(200).send({
+        return res.status(200).send({
             recommend,
             resume: continueListening
         });

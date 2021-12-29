@@ -19,7 +19,7 @@ module.exports.getLibraryItems = async (req, res) => {
             return res.status(500).send({ msg: err });
         }
         if (!songs)
-            res.status(200).send([]);
-        else res.status(200).send(songs);
+            return res.status(200).send([]);
+        else return res.status(200).send(songs);
     });
 };

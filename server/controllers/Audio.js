@@ -6,9 +6,7 @@ module.exports.getAudio = (req, res) => {
     Song.findById(req.params.id, (err, audio) => {
         if (err) {
             console.log(err);
-            return res.status(500).send({
-                msg: err
-            });
+            return res.status(500).send({ msg: err });
         }
         if (!audio)
             return res.status(404).send({ msg: "Audio not found" });

@@ -15,14 +15,14 @@ module.exports.addLibrary = (req, res) => {
             newLib.save().then(savedLib => {
                 if (savedLib === newLib) { // if savedLib returned is the same as newLib then saved successfully
                     services.scanLibraries();
-                    res.status(201).send({ msg: "Path added to Library successfully" });
-                } else res.status(500).send({ msg: "Failed to add path to library" });
+                    return res.status(201).send({ msg: "Path added to Library successfully" });
+                } else return res.status(500).send({ msg: "Failed to add path to library" });
             });
         }
-        else res.status(409).send({ msg: "That path is already tracked" });
+        else return res.status(409).send({ msg: "That path is already tracked" });
     });
 };
 
 module.exports.getLibraries = async (_, res) => {
-    res.status(200).send(await services.getLibraryRoots());
+    return res.status(200).send(await services.getLibraryRoots());
 };
