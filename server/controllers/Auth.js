@@ -54,7 +54,7 @@ module.exports.createUser = (req, res) => {
     User.find({ username }, (err, user) => {
         if (err) {
             console.log(err);
-            res.status(500).send({ msg: err });
+            return res.status(500).send({ msg: err });
         }
 
         if (user?.length < 1) {
@@ -64,17 +64,18 @@ module.exports.createUser = (req, res) => {
 
                 const newUser = new User({ username, password: hash });
                 newUser.save().then(savedUser => {
-                    if (savedUser === newUser) { // if savedUser returned is the same as newUser then saved successfully
+                    // if savedUser returned is the same as newUser then saved successfully
+                    if (savedUser === newUser) {
                         // send back a cookie for user to use to get the jwt token
                         createAuthCookie(res, savedUser.username, savedUser._id)
                             .status(201)
                             .send({ msg: "User created successfully" });
-                    } else res.status(500).send({ msg: "User creation failed" });
+                    } else return res.status(500).send({ msg: "User creation failed" });
                 });
             } catch (e) {
-                res.status(500).send({ msg: "Error securing your password" });
+                return res.status(500).send({ msg: "Error securing your password" });
             }
-        } else res.status(409).send({ msg: "User with that username already exists" });
+        } else return res.status(409).send({ msg: "User with that username already exists" });
     });
 };
 
