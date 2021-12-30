@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const ffmpeg = require("fluent-ffmpeg");
 const Song = require("./models/song");
 const MusicLibrary = require("./models/musicLibrary");
 
@@ -58,6 +59,19 @@ const getLibraryRoots = async () => {
     return roots.map(({ path }) => path).filter(i => i); // filter to remove nulls
 };
 
+const getAudioDuration = (a) => {
+    return new Promise((resolve, reject) => {
+        ffmpeg.setFfmpegPath(global.FFMPEG_PATH);
+        ffmpeg.setFfprobePath(global.FFPROBE_PATH);
+        return ffmpeg.ffprobe(a, (err, metadata) => {
+            if (err) return reject(err);
+
+            const { duration } = metadata.streams[0];
+            return resolve(duration);
+        });
+    });
+};
+
 module.exports = {
     scanLibraries: async () => {
         let audio = (await getLibraryRoots())
@@ -70,17 +84,23 @@ module.exports = {
         let dbAudio = (await Song.find({}, { name: 1, extension: 1 }))
             .map(({ name, extension }) => name + "." + extension);
 
-        audio.forEach(a => {
-            if (!dbAudio.includes(path.basename(a))) {
+        for (let i = 0; i < audio.length; i++) {
+            if (!dbAudio.includes(path.basename(audio[i]))) {
                 // add new item to the db
-                const newSong = new Song({
-                    name: path.basename(a).slice(0, -path.extname(a).length),
-                    location: path.dirname(a),
-                    extension: path.extname(a).slice(1)
-                });
+                let songObj = {
+                    name: path.basename(audio[i]).slice(0, -path.extname(audio[i]).length),
+                    location: path.dirname(audio[i]),
+                    extension: path.extname(audio[i]).slice(1),
+                };
+                try {
+                    songObj.duration = await getAudioDuration(audio[i]);
+                } catch (e) {
+                    console.log(e);
+                }
+                const newSong = new Song(songObj);
                 newSong.save(); // this returns a promise
             }
-        });
+        }
     },
     getLibraryRoots: async () => await getLibraryRoots(),
     anyLibrariesExist: () => getLibraryRoots().length > 0,
