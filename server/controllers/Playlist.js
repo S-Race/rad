@@ -24,17 +24,20 @@ module.exports.getPlaylist = async (req, res) => {
     if (!id)
         return res.status(400).send({ msg: "Invalid id" });
 
-    Playlist.findById(id, (err, playlist) => {
-        if (err) {
-            console.log(err);
-            return res.status(500).send({ msg: err });
-        }
+    Playlist
+        .findById(id)
+        .populate({ path: "items", select: ["name", "poster", "duration"] })
+        .exec((err, playlist) => {
+            if (err) {
+                console.log(err);
+                return res.status(500).send({ msg: err });
+            }
 
-        if (!playlist)
-            return res.status(404).send({ msg: "Playlist not found" });
+            if (!playlist)
+                return res.status(404).send({ msg: "Playlist not found" });
 
-        return res.status(200).send(playlist);
-    });
+            return res.status(200).send(playlist);
+        });
 };
 
 // get all playlist by specific owner

@@ -38,7 +38,7 @@ const NavBar = () => {
                 {/* sr logo */}
                 <div className="flex items-center space-x-3">
                     <Link to="/dashboard" className="block p-3 text-gray-100">
-                        <img src="images/sr.png" className="object-contain h-12 w-24"/>
+                        <img src="/images/sr.png" className="object-contain h-12 w-24"/>
                     </Link>
                 </div>
 
