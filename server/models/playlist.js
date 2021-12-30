@@ -12,7 +12,8 @@ const playlistSchema = new Schema({
     },
     items: { // array of song ids
         type: [mongoose.ObjectId],
-        required: true
+        required: true,
+        ref: "Song"
     },
     poster: String
 });

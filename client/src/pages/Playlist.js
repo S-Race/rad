@@ -7,6 +7,7 @@ import "../styles/audio_item.css";
 import Loader from "../components/Loader";
 import PlaylistListItem from "../components/PlaylistListItem";
 import { useUserContext } from "../UserContext";
+import { calcDuration } from "../commons";
 
 const Playlists = () => {
     const [playlistLoaded, setPlaylistLoaded] = useState(false);
@@ -19,7 +20,14 @@ const Playlists = () => {
     const onItemClickPlay = index => {
         onItemClick({
             name: playlist.name,
-            items: playlist.items.map(i => { return { track: i }; })
+            items: playlist.items.map(i => {
+                return {
+                    track: i._id,
+                    name: i.name,
+                    poster: i.poster,
+                    duration: i.duration
+                };
+            })
         }, index);
     };
 
@@ -43,6 +51,10 @@ const Playlists = () => {
             setPlaylistLoaded(true);
         })();
     }, []);
+
+    const getTotalDuration = (p) => {
+        return calcDuration(p?.items.reduce((acc, prev) =>  acc + (prev?.duration ?? 0), 0));
+    };
 
     return (
         <div className="bg-gray-800 text-gray-100 min-h-screen p-4 md:py-5 md:px-16">
@@ -73,11 +85,11 @@ const Playlists = () => {
                         </div>
                         <div className="flex my-2 justify-between">
                             <span>{playlist.items.length + " item" + (playlist.items.length !== 1 ? "s" : "")}</span>
-                            {/* <span>- min</span> */}
+                            <span>{getTotalDuration(playlist)} min</span>
                         </div>
                         <div className="flex flex-col">
                             { playlist.items.map((item, i) =>
-                                <PlaylistListItem id={item} key={i}
+                                <PlaylistListItem item={item} key={i}
                                     index={i} click={onItemClickPlay}/>
                             )}
                         </div>
