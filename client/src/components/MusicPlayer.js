@@ -41,6 +41,21 @@ const MusicPlayer = ({ track, songName, listName, navigateList }) => {
     const [volumeIcon, setVolumeIcon] = useState(determineVolumeIcon());
     useEffect(() => setVolumeIcon(determineVolumeIcon()), [currentVolume]);
 
+    const [hoverPosition, setHoverPosition] = useState({
+        time: 0,
+        position: 0
+    });
+
+    const getPosition = (e) => {
+        const leftEnd = progressContainer.current.getBoundingClientRect().x;
+        const position = e.clientX;
+        const pointerTime = (position - leftEnd) / progressContainer.current.getBoundingClientRect().width * time.max;
+        setHoverPosition({
+            time: pointerTime,
+            position: (pointerTime / time.max) * 100
+        });
+    };
+
     return (
         <div className="sticky bottom-0 z-[5]">
             <audio ref={audioElement} src={`/api/audio/${track}?token=${token}`}></audio>
@@ -55,7 +70,11 @@ const MusicPlayer = ({ track, songName, listName, navigateList }) => {
                             {songName}</p>
                         <h2 className="text-gray-600 hidden sm:block sm:text-xs md:text-sm truncate">{listName}</h2>
                     </div>
-                    <div className="relative" onDragOver={seek} ref={progressContainer}>
+                    <div className="relative group" onDragOver={seek}
+                        onMouseMove={getPosition} ref={progressContainer}>
+                        <span className="text bg-blue-500 text-gray-200 px-1 py-2 rounded-sm block mb-1 invisible
+                            group-hover:visible absolute bottom-full" style={{ left: hoverPosition.position + "%" }}>
+                            {calcDuration(hoverPosition.time)}</span>
                         <div onClick={seek}
                             className="bg-gray-700 rounded-full overflow-hidden cursor-pointer relative">
                             <div ref={progressBar} className="bg-blue-700 h-2 relative z-[4]" role="progressbar"

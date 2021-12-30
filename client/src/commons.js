@@ -13,6 +13,7 @@ const calcDuration = seconds => {
 
     const min = 60;
     if (!seconds && seconds !== 0) return "-";
+    if (isNaN(seconds)) return "-";
     if (seconds < min) return "00:" + pad(Math.floor(seconds));
     else if (seconds < 60 * min) {
         let mins = Math.floor(seconds / 60);
