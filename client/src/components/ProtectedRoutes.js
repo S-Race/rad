@@ -69,8 +69,8 @@ const ProtectedRoutes = () => {
                 <Outlet context={onItemClick}/>
                 {
                     showPlayer ?
-                        <MusicPlayer songName={currentList.items[currentItem].name}
-                            listName={currentList.name} track={currentList.items[currentItem].track}
+                        <MusicPlayer songName={currentList.items[currentItem]?.name}
+                            listName={currentList?.name} track={currentList.items[currentItem]?.track}
                             navigateList={navigateList}/>
                         :
                         <></>
