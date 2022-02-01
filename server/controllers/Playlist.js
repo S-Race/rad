@@ -70,7 +70,7 @@ module.exports.getPlaylists = async (req, res) => {
 };
 
 // add item to existing playlist
-module.exports.addItemToPlaylist = async  (req, res) => {
+module.exports.addItemToPlaylist = async (req, res) => {
     const { playlist_id, song_id } = req.params;
 
     if (!playlist_id || !song_id)
@@ -94,6 +94,49 @@ module.exports.addItemToPlaylist = async  (req, res) => {
                 return res.status(201).send({ msg: "Successfully added item to playlist" });
             else
                 return res.status(500).send({ msg: "Failed to add item to playlist" });
+        });
+    });
+};
+
+module.exports.deletePlaylist = (req, res) => {
+    const { playlist_id } = req.params;
+
+    if (!playlist_id) return res.status(400).send({ msg: "Missing playlist id" });
+
+    Playlist.findByIdAndDelete(playlist_id, (err) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).send({ msg: err });
+        }
+
+        return res.status(200).send({ msg: "Deleted playlist" });
+    });
+};
+
+module.exports.deletePlaylistItem = (req, res) => {
+    const { playlist_id, song_id } = req.params;
+
+    if (!playlist_id) return res.status(400).send({ msg: "Missing playlist id" });
+    if (!song_id) return res.status(400).send({ msg: "Missing song id" });
+
+    Playlist.findById(playlist_id, (err, playlist) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).send({ msg: err });
+        }
+
+        if (!playlist)
+            return res.status(404).send({ msg: "Bad playlist id" });
+
+        const updatedList = playlist.items.filter(i => i+"" !== song_id+"");
+        if (updatedList.length === playlist.items.length)
+            return res.status(404).send({ msg: "Item does not exist in playlist" });
+
+        Playlist.updateOne({ _id: playlist_id }, { items: updatedList }).then(result => {
+            if (result.modifiedCount === 1 && result.acknowledged)
+                return res.status(201).send({ msg: "Successfully updated playlist" });
+            else
+                return res.status(500).send({ msg: "Failed to remove item from playlist" });
         });
     });
 };

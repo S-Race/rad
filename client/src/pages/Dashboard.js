@@ -29,7 +29,7 @@ const Dashboard = () => {
     }, []);
 
     return (
-        <div className="bg-gray-800 text-gray-100 min-h-screen">
+        <div className="bg-gray-800 text-gray-100 min-h-screen p-5">
             {
                 deckLoaded ? (
                     <>

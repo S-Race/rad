@@ -1,18 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useOutletContext } from "react-router-dom";
 
 import "../styles/audio_item.css";
 
 import Loader from "../components/Loader";
 import PlaylistListItem from "../components/PlaylistListItem";
+import Modal from "../components/Modal";
 import { useUserContext } from "../UserContext";
 import { calcDuration } from "../commons";
+import ConfirmDialog from "../components/ConfirmDialog";
+import { requestSync } from "../hooks/Fetch";
 
 const Playlists = () => {
     const [playlistLoaded, setPlaylistLoaded] = useState(false);
     const [playlist, setPlaylist] = useState([]);
     const { playlist_id } = useParams();
+    const navigate = useNavigate();
+
+    const [showDelete, setShowDelete] = useState(false);
 
     const onItemClick = useOutletContext();
     const { user: { token } } = useUserContext();
@@ -31,26 +37,53 @@ const Playlists = () => {
         }, index);
     };
 
-    useEffect(() => {
-        // get the items in the playlist
-        (async () => {
-            const res = await fetch("/api/playlist/" + playlist_id, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
-                },
-            });
+    const confirmDelete = () => setShowDelete(true);
 
-            if (res.status !== 200) {
-                alert("A critical error occurred");
-                return;
-            }
+    const deletePlaylist = async () => {
+        const result = await requestSync({
+            url: "/api/playlist/" + playlist_id,
+            method: "DELETE",
+            token
+        });
+        if (!result.success) {
+            alert(result.msg);
+            setShowDelete(false);
+        } else {
+            setShowDelete(false);
+            navigate("/playlists");
+        }
+    };
 
-            setPlaylist(await res.json());
+    const cancelDelete = () => setShowDelete(false);
+
+    const deletePlaylistItem = async (id) => {
+        const result = await requestSync({
+            url: `/api/playlist/${playlist_id}/${id}`,
+            method: "DELETE",
+            token
+        });
+        if (!result.success)
+            alert(result.msg);
+        else
+            loadList(); // reload list after deleting item
+    };
+
+    const loadList = async () => {
+        const result = await requestSync({
+            url: `/api/playlist/${playlist_id}`,
+            method: "GET",
+            token
+        });
+        if (!result.success)
+            alert(result.msg);
+        else {
+            setPlaylist(result.json);
             setPlaylistLoaded(true);
-        })();
-    }, []);
+        }
+    };
+
+    // get the items in the playlist
+    useEffect(() => loadList(), []);
 
     const getTotalDuration = (p) => {
         return calcDuration(p?.items.reduce((acc, prev) =>  acc + (prev?.duration ?? 0), 0));
@@ -61,6 +94,12 @@ const Playlists = () => {
             {
                 playlistLoaded ? (
                     <div>
+                        { showDelete ?
+                            <Modal open={showDelete} close={cancelDelete}>
+                                <ConfirmDialog question="Are you sure you want to delete this playlist?"
+                                    cancel={cancelDelete} confirm={deletePlaylist}/>
+                            </Modal> : <></>
+                        }
                         <div className="flex md:my-12 my-4">
                             <div className="audio_item !bg-transparent relative w-28 md:w-48 flex-shrink-0">
                                 <img src={playlist.poster || "https://picsum.photos/200/200?id=" + playlist.name}
@@ -78,6 +117,16 @@ const Playlists = () => {
                                                 clipRule="evenodd" />
                                         </svg>
                                     </button>
+                                    <button onClick={confirmDelete}
+                                        className="bottom-[8px] right-1 absolute hover:text-blue-500">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"
+                                            width="12" height="12">
+                                            <path fill="currentColor" d="M432 32H312l-9.4-18.7A24 24 0 0 0 281.1
+                                                0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16
+                                                0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16zM53.2 467a48 48
+                                                0 0 0 47.9 45h245.8a48 48 0 0 0 47.9-45L416 128H32z"></path>
+                                        </svg>
+                                    </button>
                                 </div>
                             </div>
                             <h2 className="text-lg md:text-3xl font-semibold mx-10 pt-5 truncate
@@ -89,7 +138,7 @@ const Playlists = () => {
                         </div>
                         <div className="flex flex-col">
                             { playlist.items.map((item, i) =>
-                                <PlaylistListItem item={item} key={i}
+                                <PlaylistListItem item={item} key={i} remove={deletePlaylistItem}
                                     index={i} click={onItemClickPlay}/>
                             )}
                         </div>
